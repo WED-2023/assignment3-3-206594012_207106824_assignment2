@@ -7,13 +7,22 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import store from './store';
 
+// Configure axios with backend URL
+axios.defaults.baseURL = store.server_domain;
+
+// Create router with guards
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes: routes.routes
 });
+
+// Apply route guards
+router.beforeEach(routes.beforeEach);
+router.afterEach(routes.afterEach);
 
 const app = createApp(App);
 
@@ -21,6 +30,7 @@ app.use(router);
 app.use(VueAxios, axios);
 
 app.config.globalProperties.store = store;
+app.config.globalProperties.axios = axios;
 
 app.config.globalProperties.toast = function (title, content, variant = null, append = false) {
   const toastContainerId = "toast-container";
@@ -59,5 +69,12 @@ app.config.globalProperties.toast = function (title, content, variant = null, ap
     toast.remove();
   }, 3000);
 };
+
+// Make toast globally available
+window.toast = app.config.globalProperties.toast;
+
+// Make axios globally available
+window.axios = axios;
+window.store = store;
 
 app.mount('#app');
