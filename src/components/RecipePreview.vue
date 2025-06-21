@@ -18,24 +18,21 @@
       >
         <div class="text-center text-white">
           <i class="bi bi-eye display-6"></i>
-          <p class="mb-0 mt-2">לחץ לצפייה במתכון</p>
+          <p class="mb-0 mt-2">Click to view recipe</p>
         </div>
       </div>
       
-      <!-- Favorite Button -->
-      <button 
-        @click.stop="toggleFavorite"
-        class="btn btn-sm position-absolute top-0 end-0 m-2"
-        :class="isFavorite ? 'btn-danger' : 'btn-outline-danger'"
-        :title="isFavorite ? 'הסר ממועדפים' : 'הוסף למועדפים'"
-      >
-        <i class="bi" :class="isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>
-      </button>
+      <!-- Favorite Indicator -->
+      <div v-if="recipe.isFavorite" class="position-absolute top-0 end-0 m-2">
+        <span class="badge bg-danger">
+          <i class="bi bi-heart-fill"></i>
+        </span>
+      </div>
       
       <!-- Viewed Indicator -->
-      <div v-if="isViewed" class="position-absolute top-0 start-0 m-2">
+      <div v-if="recipe.wasWatched" class="position-absolute top-0 start-0 m-2">
         <span class="badge bg-success">
-          <i class="bi bi-eye"></i> צפית
+          <i class="bi bi-eye-fill"></i> Viewed
         </span>
       </div>
     </div>
@@ -46,34 +43,24 @@
       <!-- Recipe Meta Info -->
       <div class="recipe-meta mb-2">
         <span class="badge bg-primary me-1">
-          <i class="bi bi-clock"></i> {{ recipe.readyInMinutes }} דקות
+          <i class="bi bi-clock"></i> {{ recipe.readyInMinutes }} minutes
         </span>
         <span class="badge bg-warning">
-          <i class="bi bi-star"></i> {{ recipe.aggregateLikes }} לייקים
+          <i class="bi bi-star"></i> {{ recipe.popularity }} likes
         </span>
       </div>
       
       <!-- Dietary Indicators -->
       <div class="dietary-indicators mb-2">
         <span v-if="recipe.vegan" class="badge bg-success me-1">
-          <i class="bi bi-leaf"></i> טבעוני
+          <i class="bi bi-leaf"></i> Vegan
         </span>
         <span v-else-if="recipe.vegetarian" class="badge bg-info me-1">
-          <i class="bi bi-flower1"></i> צמחוני
+          <i class="bi bi-flower1"></i> Vegetarian
         </span>
         <span v-if="recipe.glutenFree" class="badge bg-warning">
-          <i class="bi bi-shield-check"></i> ללא גלוטן
+          <i class="bi bi-shield-check"></i> Gluten-Free
         </span>
-      </div>
-      
-      <!-- Recipe Description -->
-      <p v-if="recipe.instructions" class="card-text recipe-description">
-        {{ truncateText(recipe.instructions, 100) }}
-      </p>
-      
-      <!-- Servings -->
-      <div v-if="recipe.servings" class="text-muted small">
-        <i class="bi bi-people"></i> {{ recipe.servings }} מנות
       </div>
     </div>
   </div>
@@ -97,78 +84,23 @@ export default {
       showHoverEffect: false
     }
   },
-  computed: {
-    isFavorite() {
-      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-      return favorites.some(fav => fav.id === this.recipe.id);
-    },
-    isViewed() {
-      const viewedRecipes = JSON.parse(localStorage.getItem('viewedRecipes') || '[]');
-      return viewedRecipes.some(viewed => viewed.id === this.recipe.id);
-    }
-  },
   methods: {
     viewRecipe() {
-      // Mark as viewed
-      this.markAsViewed();
-      
-      // Navigate to recipe page
-      this.$router.push(`/recipe/${this.recipe.id}`);
-    },
-    
-    toggleFavorite(event) {
-      event.stopPropagation();
-      
-      let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-      
-      if (this.isFavorite) {
-        // Remove from favorites
-        favorites = favorites.filter(fav => fav.id !== this.recipe.id);
-        this.toast('הסרה ממועדפים', 'המתכון הוסר מהמועדפים', 'info');
-      } else {
-        // Add to favorites
-        favorites.push({
-          id: this.recipe.id,
-          title: this.recipe.title,
-          image: this.recipe.image,
-          addedDate: new Date().toISOString().split('T')[0]
-        });
-        this.toast('הוספה למועדפים', 'המתכון נוסף למועדפים', 'success');
+      let path;
+
+      if (this.recipe.recipeID && this.recipe.recipeID.startsWith('RU')) {
+        if (this.recipe.isFamily) {
+          path = `/user/family-recipes/${this.recipe.recipeID}`;
+        } else {
+          path = `/user/my-recipes/${this.recipe.recipeID}`;
+        }
+      } else { // API
+        path = `/recipes/fullview/${this.recipe.id}`;
       }
-      
-      localStorage.setItem('favorites', JSON.stringify(favorites));
-      
-      // Emit event to parent
-      this.$emit('favorite-toggled', {
-        recipeId: this.recipe.id,
-        isFavorite: !this.isFavorite
-      });
-    },
-    
-    markAsViewed() {
-      let viewedRecipes = JSON.parse(localStorage.getItem('viewedRecipes') || '[]');
-      
-      // Remove if already exists
-      viewedRecipes = viewedRecipes.filter(viewed => viewed.id !== this.recipe.id);
-      
-      // Add to beginning
-      viewedRecipes.unshift({
-        id: this.recipe.id,
-        title: this.recipe.title,
-        image: this.recipe.image,
-        viewedAt: new Date().toISOString()
-      });
-      
-      // Keep only last 10 viewed recipes
-      viewedRecipes = viewedRecipes.slice(0, 10);
-      
-      localStorage.setItem('viewedRecipes', JSON.stringify(viewedRecipes));
-    },
-    
-    truncateText(text, maxLength) {
-      if (text.length <= maxLength) return text;
-      return text.substring(0, maxLength) + '...';
+
+      this.$router.push(path);
     }
+
   }
 }
 </script>
@@ -245,16 +177,6 @@ export default {
   gap: 0.25rem;
 }
 
-.recipe-description {
-  color: #666;
-  line-height: 1.5;
-  font-size: 0.9rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .btn {
   border-radius: 50%;
   width: 35px;
@@ -274,7 +196,6 @@ export default {
   padding: 0.25rem 0.5rem;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .recipe-image {
     height: 150px;

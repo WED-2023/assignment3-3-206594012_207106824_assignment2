@@ -1,6 +1,8 @@
 import HomePage from "../pages/HomePage.vue";
 import NotFound from "../pages/NotFoundPage.vue";
 import store from "../store";
+import RecipeViewPage from '../pages/RecipeViewPage.vue';
+
 
 const routes = [
   {
@@ -87,23 +89,30 @@ const routes = [
     }
   },
   {
-    path: "/my-recipes",
-    name: "myRecipes",
-    component: () => import("../pages/MyRecipesPage.vue"),
-    meta: {
-      title: "המתכונים שלי - Vue Recipes",
-      requiresAuth: true // רק למשתמשים מחוברים
-    }
+    path: '/my-recipes/:recipeId',
+    name: 'MyRecipeView',
+    component: RecipeViewPage
   },
   {
-    path: "/family-recipes",
-    name: "familyRecipes",
-    component: () => import("../pages/FamilyRecipesPage.vue"),
+    path: '/family-recipes/:recipeId',
+    name: 'FamilyRecipeView',
+    component: RecipeViewPage
+  },
+  {
+  path: '/recipes/:recipeId/prepare',
+  name: 'PrepareRecipe',
+  component: () => import("../pages/PrepareRecipePage.vue")
+  },
+  {
+    path: '/meal-plan',
+    name: 'MealPlan',
+    component: () => import("../pages/MealPlanPage.vue"),
     meta: {
-      title: "המתכונים המשפחתיים שלי - Vue Recipes",
-      requiresAuth: true // רק למשתמשים מחוברים
+      title: "Meal Plan - Vue Recipes",
+      requiresAuth: true
     }
   },
+
   {
     path: "/:catchAll(.*)",
     name: "notFound",
