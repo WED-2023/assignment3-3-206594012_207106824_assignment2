@@ -140,8 +140,12 @@
         <!-- Back to Home -->
         <div class="text-center mt-5">
           <router-link to="/" class="btn btn-primary btn-lg">
-            <i class="bi bi-house me-2"></i>חזור לדף הבית
+            <i class="bi bi-house me-2"></i>Back to Home
           </router-link>
+        </div>
+        <!-- Developer credit -->
+        <div class="text-center mt-3 text-muted small">
+          Developed by Adva Shani and Lee
         </div>
       </div>
     </div>

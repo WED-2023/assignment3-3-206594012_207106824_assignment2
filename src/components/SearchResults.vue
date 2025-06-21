@@ -7,23 +7,23 @@
           <div class="col-md-6">
             <div class="results-info">
               <span v-if="loading" class="text-muted">
-                <i class="bi bi-hourglass-split"></i> מחפש...
+                <i class="bi bi-hourglass-split"></i> Searching...
               </span>
               <span v-else-if="results.length > 0" class="text-success">
-                <i class="bi bi-check-circle"></i> נמצאו {{ results.length }} תוצאות
+                <i class="bi bi-check-circle"></i> {{ results.length }} results found
               </span>
               <span v-else class="text-warning">
-                <i class="bi bi-exclamation-triangle"></i> לא נמצאו תוצאות
+                <i class="bi bi-exclamation-triangle"></i> No results found
               </span>
             </div>
           </div>
           
           <div class="col-md-6 text-end">
             <div class="sort-options" v-if="results.length > 0">
-              <label class="form-label me-2">מיון לפי:</label>
+              <label class="form-label me-2">Sort by:</label>
               <select v-model="sortBy" class="form-select d-inline-block w-auto" @change="handleSort">
-                <option value="popularity">פופולריות</option>
-                <option value="time">זמן הכנה</option>
+                <option value="popularity">Popularity</option>
+                <option value="time">Preparation Time</option>
               </select>
             </div>
           </div>
@@ -34,9 +34,9 @@
     <!-- Loading State -->
     <div class="loading-state text-center py-5" v-if="loading">
       <div class="spinner-border text-primary mb-3" role="status">
-        <span class="visually-hidden">טוען...</span>
+        <span class="visually-hidden">Loading...</span>
       </div>
-      <p class="text-muted">מחפש מתכונים...</p>
+      <p class="text-muted">Searching for recipes...</p>
     </div>
 
     <!-- Results List -->
@@ -53,17 +53,17 @@
               <h5 class="card-title recipe-title">{{ recipe.title }}</h5>
               <div class="recipe-meta mb-2">
                 <span class="badge bg-primary me-2">
-                  <i class="bi bi-clock"></i> {{ recipe.readyInMinutes }} דקות
+                  <i class="bi bi-clock"></i> {{ recipe.readyInMinutes }} min
                 </span>
                 <span class="badge bg-success">
-                  <i class="bi bi-star"></i> {{ recipe.aggregateLikes }} לייקים
+                  <i class="bi bi-star"></i> {{ recipe.aggregateLikes }} likes
                 </span>
               </div>
               <p class="card-text recipe-instructions">{{ recipe.instructions }}</p>
             </div>
             <div class="card-footer">
               <button class="btn btn-outline-primary btn-sm w-100">
-                <i class="bi bi-eye"></i> צפה במתכון
+                <i class="bi bi-eye"></i> View Recipe
               </button>
             </div>
           </div>
@@ -75,8 +75,8 @@
     <div class="no-results text-center py-5" v-else-if="hasSearched">
       <div class="no-results-content">
         <i class="bi bi-search display-1 text-muted mb-3"></i>
-        <h3 class="text-muted">לא נמצאו תוצאות</h3>
-        <p class="text-muted">נסה לשנות את מילות החיפוש או הסינון שלך</p>
+        <h3 class="text-muted">No results found</h3>
+        <p class="text-muted">Try changing your search terms or filters</p>
       </div>
     </div>
   </div>

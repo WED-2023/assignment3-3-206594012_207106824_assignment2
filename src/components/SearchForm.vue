@@ -4,19 +4,19 @@
       <input 
         v-model="localSearchQuery" 
         type="text" 
-        placeholder="חפש מתכון או מאכל..."
+        placeholder="Search for a recipe or dish..."
         class="form-control"
         @keyup.enter="handleSearch"
       />
       <button @click="handleSearch" class="btn btn-primary">
-        <i class="bi bi-search"></i> חיפוש
+        <i class="bi bi-search"></i> Search
       </button>
     </div>
     
     <div class="search-options mb-3">
       <div class="row">
         <div class="col-md-3">
-          <label class="form-label">מספר תוצאות:</label>
+          <label class="form-label">Number of results:</label>
           <select v-model="localResultsCount" class="form-select">
             <option value="5">5</option>
             <option value="10">10</option>
@@ -29,9 +29,9 @@
     <div class="filters-section">
       <div class="row">
         <div class="col-md-4 mb-2">
-          <label class="form-label">סוג מטבח:</label>
+          <label class="form-label">Cuisine type:</label>
           <select v-model="localSelectedCuisine" class="form-select">
-            <option value="">ללא סינון</option>
+            <option value="">No filter</option>
             <option v-for="cuisine in cuisines" :key="cuisine" :value="cuisine">
               {{ cuisine }}
             </option>
@@ -39,9 +39,9 @@
         </div>
 
         <div class="col-md-4 mb-2">
-          <label class="form-label">דיאטה:</label>
+          <label class="form-label">Diet:</label>
           <select v-model="localSelectedDiet" class="form-select">
-            <option value="">ללא סינון</option>
+            <option value="">No filter</option>
             <option v-for="diet in diets" :key="diet" :value="diet">
               {{ diet }}
             </option>
@@ -49,9 +49,9 @@
         </div>
 
         <div class="col-md-4 mb-2">
-          <label class="form-label">אי-סבילות:</label>
+          <label class="form-label">Intolerance:</label>
           <select v-model="localSelectedIntolerance" class="form-select">
-            <option value="">ללא סינון</option>
+            <option value="">No filter</option>
             <option v-for="intolerance in intolerances" :key="intolerance" :value="intolerance">
               {{ intolerance }}
             </option>
@@ -152,7 +152,7 @@ export default {
   methods: {
     handleSearch() {
       if (!this.localSearchQuery.trim()) {
-        this.$emit('validation-error', 'אנא הכנס מילת חיפוש')
+        this.$emit('validation-error', 'Please enter a search term')
         return
       }
       

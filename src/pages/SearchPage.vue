@@ -5,9 +5,9 @@
         <!-- Page Header -->
         <div class="text-center mb-4">
           <h1 class="display-4 text-primary">
-            <i class="bi bi-search"></i> חיפוש מתכונים
+            <i class="bi bi-search"></i> Recipe Search
           </h1>
-          <p class="lead text-muted">גלה מתכונים חדשים ומרתקים</p>
+          <p class="lead text-muted">Discover new and exciting recipes</p>
         </div>
 
         <!-- Search Form Component -->
@@ -26,12 +26,12 @@
           <div class="d-flex justify-content-between align-items-center">
             <div>
               <h5 class="alert-heading">
-                <i class="bi bi-clock-history"></i> החיפוש האחרון שלך:
+                <i class="bi bi-clock-history"></i> Your last search:
               </h5>
-              <p class="mb-0">"{{ lastSearch.query }}" - {{ lastSearch.resultsCount }} תוצאות</p>
+              <p class="mb-0">"{{ lastSearch.query }}" - {{ lastSearch.resultsCount }} results</p>
             </div>
             <button @click="loadLastSearch" class="btn btn-outline-primary">
-              <i class="bi bi-arrow-clockwise"></i> טען חיפוש אחרון
+              <i class="bi bi-arrow-clockwise"></i> Load last search
             </button>
           </div>
         </div>
@@ -92,9 +92,9 @@ export default {
         const response = await axios.get('/recipes/search', { params })
         this.searchResults = response.data
         this.saveLastSearch(searchParams)
-        this.showSuccess(`נמצאו ${this.searchResults.length} מתכונים!`)
+        this.showSuccess(`Found ${this.searchResults.length} recipes!`)
       } catch (error) {
-        this.showError('אירעה שגיאה בחיפוש. נסה שוב.')
+        this.showError('An error occurred during search. Please try again.')
         console.error('Search error:', error)
       } finally {
         this.loading = false
@@ -140,11 +140,11 @@ export default {
     },
     
     showSuccess(message) {
-      this.toast('הצלחה', message, 'success')
+      this.toast('Success', message, 'success')
     },
     
     showError(message) {
-      this.toast('שגיאה', message, 'danger')
+      this.toast('Error', message, 'danger')
     },
     
     toast(title, content, variant = null) {

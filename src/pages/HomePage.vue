@@ -12,16 +12,16 @@
           <div class="card-body flex-grow-1">
             <div v-if="loadingRandom" class="text-center py-4">
               <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">טוען...</span>
+                <span class="visually-hidden">Loading...</span>
               </div>
-              <p class="mt-2 text-muted">טוען מתכונים רנדומליים...</p>
+              <p class="mt-2 text-muted">Loading random recipes...</p>
             </div>
             <div v-else-if="randomRecipes.length > 0">
               <RecipePreviewList :title="''" :recipes="randomRecipes" />
             </div>
             <div v-else class="text-center py-4">
               <i class="bi bi-emoji-frown display-4 text-muted"></i>
-              <p class="text-muted mt-2">לא נמצאו מתכונים</p>
+              <p class="text-muted mt-2">No recipes found</p>
             </div>
           </div>
           <div class="card-footer bg-transparent border-0 text-center">
@@ -32,7 +32,7 @@
             >
               <span v-if="loadingRandom" class="spinner-border spinner-border-sm me-2" role="status"></span>
               <i v-else class="bi bi-arrow-clockwise me-2"></i>
-              {{ loadingRandom ? 'טוען...' : 'עוד מתכונים' }}
+              {{ loadingRandom ? 'Loading...' : 'More recipes' }}
             </button>
           </div>
         </div>
@@ -48,7 +48,7 @@
           </div>
           <div v-else class="card-header bg-warning text-dark">
             <h4 class="mb-0">
-              <i class="bi bi-person-circle"></i> התחבר לאתר
+              <i class="bi bi-person-circle"></i> Sign in to the site
             </h4>
           </div>
           <div class="card-body flex-grow-1">
@@ -56,32 +56,32 @@
             <div v-if="isLoggedIn">
               <div v-if="loadingWatched" class="text-center py-4">
                 <div class="spinner-border text-success" role="status">
-                  <span class="visually-hidden">טוען...</span>
+                  <span class="visually-hidden">Loading...</span>
                 </div>
-                <p class="mt-2 text-muted">טוען מתכונים אחרונים...</p>
+                <p class="mt-2 text-muted">Loading recent recipes...</p>
               </div>
               <div v-else-if="watchedRecipes.length > 0">
                 <RecipePreviewList :title="''" :recipes="watchedRecipes" />
               </div>
               <div v-else class="text-center py-4">
                 <i class="bi bi-eye-slash display-4 text-muted"></i>
-                <p class="text-muted mt-2">עדיין לא צפית במתכונים</p>
+                <p class="text-muted mt-2">You haven't viewed any recipes yet</p>
                 <router-link to="/search" class="btn btn-outline-success">
-                  <i class="bi bi-search me-2"></i>חפש מתכונים
+                  <i class="bi bi-search me-2"></i>Search recipes
                 </router-link>
               </div>
             </div>
             <!-- Non-logged in content -->
             <div v-else class="text-center py-5">
               <i class="bi bi-person-plus display-1 text-warning mb-4"></i>
-              <h5 class="text-muted mb-3">התחבר כדי לראות מתכונים מותאמים אישית</h5>
-              <p class="text-muted mb-4">קבל המלצות מתכונים מותאמות לטעמים שלך ועקוב אחר המתכונים שצפית בהם</p>
+              <h5 class="text-muted mb-3">Sign in to see personalized recipes</h5>
+              <p class="text-muted mb-4">Get recipe recommendations tailored to your tastes and track the recipes you've viewed</p>
               <div class="d-grid gap-2 d-md-block">
                 <router-link to="/login" class="btn btn-success btn-lg me-md-2">
-                  <i class="bi bi-box-arrow-in-right me-2"></i>התחברות
+                  <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
                 </router-link>
                 <router-link to="/register" class="btn btn-outline-primary btn-lg">
-                  <i class="bi bi-person-plus me-2"></i>הרשמה
+                  <i class="bi bi-person-plus me-2"></i>Register
                 </router-link>
               </div>
             </div>
@@ -125,12 +125,12 @@ export default {
       this.loadingRandom = true
       try {
         // קריאה אמיתית ל-backend
-        const response = await axios.get('/recipes/random')
+        const response = await axios.get('http://localhost:3001/recipes/random')
         console.log("Random recipes response:", response.data); // Log the response
         this.randomRecipes = response.data
       } catch (error) {
         console.error('Error loading random recipes:', error)
-        this.toast('שגיאה', 'שגיאה בטעינת מתכונים רנדומליים', 'danger')
+        this.toast('Error', 'Error loading random recipes', 'danger')
       } finally {
         this.loadingRandom = false
       }
@@ -149,7 +149,7 @@ export default {
         this.watchedRecipes = response.data
       } catch (error) {
         console.error('Error loading watched recipes:', error)
-        this.toast('שגיאה', 'שגיאה בטעינת מתכונים אחרונים', 'danger')
+        this.toast('Error', 'Error loading recent recipes', 'danger')
       } finally {
         this.loadingWatched = false
       }
@@ -183,6 +183,7 @@ export default {
 .card-text {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-size: 0.9rem;

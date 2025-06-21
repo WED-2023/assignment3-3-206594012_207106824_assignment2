@@ -27,17 +27,17 @@
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
               <router-link class="nav-link" :to="{ name: 'home' }">
-                <i class="bi bi-house-door me-1"></i>ראשי
+                <i class="bi bi-house-door me-1"></i>Home
               </router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" :to="{ name: 'search' }">
-                <i class="bi bi-search me-1"></i>חיפוש מתכונים
+                <i class="bi bi-search me-1"></i>Search
               </router-link>
             </li>
             <li class="nav-item">
               <router-link class="nav-link" :to="{ name: 'about' }">
-                <i class="bi bi-info-circle me-1"></i>אודות
+                <i class="bi bi-info-circle me-1"></i>About
               </router-link>
             </li>
           </ul>
@@ -48,12 +48,12 @@
             <template v-if="!isLoggedIn">
               <li class="nav-item">
                 <router-link class="nav-link" :to="{ name: 'login' }">
-                  <i class="bi bi-box-arrow-in-right me-1"></i>התחברות
+                  <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
                 </router-link>
               </li>
               <li class="nav-item">
                 <router-link class="nav-link btn btn-outline-light btn-sm ms-2" :to="{ name: 'register' }">
-                  <i class="bi bi-person-plus me-1"></i>הרשמה
+                  <i class="bi bi-person-plus me-1"></i>Register
                 </router-link>
               </li>
             </template>
@@ -79,33 +79,33 @@
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
                     <router-link class="dropdown-item" :to="{ name: 'home' }">
-                      <i class="bi bi-house-door me-2"></i>עמוד ראשי
+                      <i class="bi bi-house-door me-2"></i>Home
                     </router-link>
                   </li>
                   <li>
                     <router-link class="dropdown-item" :to="{ name: 'search' }">
-                      <i class="bi bi-search me-2"></i>חיפוש מתכונים
+                      <i class="bi bi-search me-2"></i>Search
                     </router-link>
                   </li>
                   <li><hr class="dropdown-divider"></li>
                   <li>
                     <router-link class="dropdown-item" :to="{ name: 'profile' }">
-                      <i class="bi bi-person me-2"></i>הפרופיל שלי
+                      <i class="bi bi-person me-2"></i>Profile
                     </router-link>
                   </li>
                   <li>
                     <router-link class="dropdown-item" :to="{ name: 'favorites' }">
-                      <i class="bi bi-heart me-2"></i>מועדפים
+                      <i class="bi bi-heart me-2"></i>Favorites
                     </router-link>
                   </li>
                   <li>
-                    <router-link class="dropdown-item" :to="{ name: 'myRecipes' }">
-                      <i class="bi bi-journal-text me-2"></i>המתכונים שלי
+                    <router-link class="dropdown-item" :to="{ name: 'my-recipes' }">
+                      <i class="bi bi-journal-text me-2"></i>My Recipes
                     </router-link>
                   </li>
                   <li>
-                    <router-link class="dropdown-item" :to="{ name: 'familyRecipes' }">
-                      <i class="bi bi-people me-2"></i>המתכונים המשפחתיים שלי
+                    <router-link class="dropdown-item" :to="{ name: 'family-recipes' }">
+                      <i class="bi bi-people me-2"></i>Family Recipes
                     </router-link>
                   </li>
                   <li><hr class="dropdown-divider"></li>
