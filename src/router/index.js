@@ -1,12 +1,12 @@
-import Main from "../pages/MainPage.vue";
+import HomePage from "../pages/HomePage.vue";
 import NotFound from "../pages/NotFoundPage.vue";
 import store from "../store";
 
 const routes = [
   {
     path: "/",
-    name: "main",
-    component: Main,
+    name: "home",
+    component: HomePage,
     meta: {
       title: "דף הבית - Vue Recipes",
       requiresAuth: false
@@ -14,8 +14,8 @@ const routes = [
   },
   {
     path: "/home",
-    name: "home",
-    component: () => import("../pages/HomePage.vue"),
+    name: "home-alias",
+    component: HomePage,
     meta: {
       title: "דף הבית - Vue Recipes",
       requiresAuth: false
@@ -131,7 +131,7 @@ const router = {
 
     // Handle guest-only routes (login, register)
     if (to.meta.guestOnly && isAuthenticated) {
-      next({ name: 'main' });
+      next({ name: 'home' });
       return;
     }
 

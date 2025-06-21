@@ -1,10 +1,10 @@
 <template>
-  <div id="app">
+  <div id="app" class="d-flex flex-column min-vh-100">
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
       <div class="container">
         <!-- Brand/Logo -->
-        <router-link class="navbar-brand d-flex align-items-center" :to="{ name: 'main' }">
+        <router-link class="navbar-brand d-flex align-items-center" :to="{ name: 'home' }">
           <i class="bi bi-cup-hot me-2"></i>
           <span class="fw-bold">Vue Recipes</span>
         </router-link>
@@ -26,8 +26,8 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <router-link class="nav-link" :to="{ name: 'main' }">
-                <i class="bi bi-house me-1"></i>בית
+              <router-link class="nav-link" :to="{ name: 'home' }">
+                <i class="bi bi-house-door me-1"></i>ראשי
               </router-link>
             </li>
             <li class="nav-item">
@@ -78,8 +78,8 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li>
-                    <router-link class="dropdown-item" :to="{ name: 'main' }">
-                      <i class="bi bi-house me-2"></i>דף הבית
+                    <router-link class="dropdown-item" :to="{ name: 'home' }">
+                      <i class="bi bi-house-door me-2"></i>עמוד ראשי
                     </router-link>
                   </li>
                   <li>

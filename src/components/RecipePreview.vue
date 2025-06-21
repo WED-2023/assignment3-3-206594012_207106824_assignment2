@@ -6,6 +6,7 @@
         :src="recipe.image"
         class="card-img-top recipe-image"
         :alt="recipe.title"
+        :style="{ maxHeight: imageHeight + 'px' }"
         @mouseenter="showHoverEffect = true"
         @mouseleave="showHoverEffect = false"
       />
@@ -85,6 +86,10 @@ export default {
     recipe: {
       type: Object,
       required: true
+    },
+    imageHeight: {
+      type: [String, Number],
+      default: 120
     }
   },
   data() {
@@ -189,7 +194,8 @@ export default {
 
 .recipe-image {
   width: 100%;
-  height: 200px;
+  height: auto;
+  max-height: 120px;
   object-fit: cover;
   transition: transform 0.3s ease;
 }

@@ -52,6 +52,7 @@
 <script>
 import SearchForm from '@/components/SearchForm.vue'
 import SearchResults from '@/components/SearchResults.vue'
+import axios from 'axios'
 
 export default {
   name: 'SearchPage',
@@ -79,10 +80,17 @@ export default {
     async performSearch(searchParams) {
       this.loading = true
       this.hasSearched = true
-      
       try {
-        // Simulate API call - replace with actual API call
-        await this.simulateApiCall(searchParams)
+        // קריאה אמיתית ל-backend
+        const params = {
+          query: searchParams.query,
+          cuisine: searchParams.cuisine,
+          diet: searchParams.diet,
+          intolerances: searchParams.intolerance,
+          number: searchParams.resultsCount
+        }
+        const response = await axios.get('/recipes/search', { params })
+        this.searchResults = response.data
         this.saveLastSearch(searchParams)
         this.showSuccess(`נמצאו ${this.searchResults.length} מתכונים!`)
       } catch (error) {
@@ -91,62 +99,6 @@ export default {
       } finally {
         this.loading = false
       }
-    },
-    
-    simulateApiCall(searchParams) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          this.searchResults = this.generateMockResults(searchParams.resultsCount)
-          resolve()
-        }, 1500)
-      })
-    },
-    
-    generateMockResults(count) {
-      const mockRecipes = [
-        {
-          id: 1,
-          title: 'פסטה קרבונרה',
-          image: 'https://via.placeholder.com/400x300/FF6B6B/FFFFFF?text=Pasta+Carbonara',
-          readyInMinutes: 25,
-          aggregateLikes: 150,
-          instructions: 'מתכון פסטה קרבונרה קלאסי עם ביצים, גבינת פרמזן ופנצ\'טה. מתכון מהיר וטעים שמתאים לארוחת ערב.'
-        },
-        {
-          id: 2,
-          title: 'סלמון אפוי',
-          image: 'https://via.placeholder.com/400x300/4ECDC4/FFFFFF?text=Salmon',
-          readyInMinutes: 35,
-          aggregateLikes: 89,
-          instructions: 'סלמון אפוי בתנור עם עשבי תיבול ולימון. מתכון בריא וטעים שמתאים לכל המשפחה.'
-        },
-        {
-          id: 3,
-          title: 'סלט יווני',
-          image: 'https://via.placeholder.com/400x300/45B7D1/FFFFFF?text=Greek+Salad',
-          readyInMinutes: 15,
-          aggregateLikes: 67,
-          instructions: 'סלט יווני מסורתי עם גבינת פטה, זיתים ועגבניות. מתכון קל ומהיר להכנה.'
-        },
-        {
-          id: 4,
-          title: 'פאייה ספרדית',
-          image: 'https://via.placeholder.com/400x300/96CEB4/FFFFFF?text=Paella',
-          readyInMinutes: 45,
-          aggregateLikes: 120,
-          instructions: 'פאייה ספרדית מסורתית עם אורז, פירות ים ועשבי תיבול. מתכון מרשים לאירוח.'
-        },
-        {
-          id: 5,
-          title: 'פאייה ספרדית',
-          image: 'https://via.placeholder.com/400x300/FFEAA7/FFFFFF?text=Tiramisu',
-          readyInMinutes: 30,
-          aggregateLikes: 95,
-          instructions: 'טירמיסו איטלקי קלאסי עם קפה ומסקרפונה. קינוח מושלם לסיום ארוחה.'
-        }
-      ]
-      
-      return mockRecipes.slice(0, count)
     },
     
     handleSortChange(sortBy) {

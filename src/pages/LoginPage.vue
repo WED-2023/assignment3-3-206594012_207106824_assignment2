@@ -156,17 +156,12 @@ export default {
         
         window.toast("התחברות מוצלחת", `ברוך הבא ${state.username}!`, "success");
         
-        // Check if there's a redirect URL saved
-        const redirectUrl = localStorage.getItem('redirectAfterLogin');
-        if (redirectUrl) {
-          localStorage.removeItem('redirectAfterLogin');
-          router.push(redirectUrl);
-        } else {
-          router.push('/main');
-        }
+        // Redirect to home page or previous page
+        // router.push('/main');
+        router.push('/');
       } catch (err) {
-        const errorMessage = err.response?.data?.message || 'שם משתמש או סיסמה שגויים';
-        window.toast("שגיאה בהתחברות", errorMessage, "danger");
+        const errorMessage = err.response?.data?.message || 'אירעה שגיאה';
+        window.toast("שגיאה", errorMessage, "danger");
       } finally {
         loading.value = false;
       }
