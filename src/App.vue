@@ -62,9 +62,39 @@
             <template v-else>
               <li class="nav-item">
                 <button @click="showCreateRecipeModal = true" class="nav-link btn btn-outline-light btn-sm me-2">
-                  <i class="bi bi-plus-circle me-1"></i>צור מתכון
+                  <i class="bi bi-plus-circle me-1"></i>Create Recipe
                 </button>
               </li>
+              <!-- Personal Dropdown -->
+              <li class="nav-item dropdown">
+                <a 
+                  class="nav-link dropdown-toggle d-flex align-items-center" 
+                  href="#" 
+                  role="button" 
+                  data-bs-toggle="dropdown" 
+                  aria-expanded="false"
+                >
+                  Personal
+                </a>
+                <ul class="dropdown-menu personal-dropdown-menu" style="min-width: 160px;">
+                  <li>
+                    <router-link class="dropdown-item d-flex align-items-center" :to="{ name: 'favorites' }">
+                      Favorites <i class="bi bi-heart ms-auto"></i>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link class="dropdown-item d-flex align-items-center" :to="{ name: 'my-recipes' }">
+                      Private <i class="bi bi-journal-text ms-auto"></i>
+                    </router-link>
+                  </li>
+                  <li>
+                    <router-link class="dropdown-item d-flex align-items-center" :to="{ name: 'family-recipes' }">
+                      La Familia <i class="bi bi-people ms-auto"></i>
+                    </router-link>
+                  </li>
+                </ul>
+              </li>
+              <!-- User Dropdown -->
               <li class="nav-item dropdown">
                 <a 
                   class="nav-link dropdown-toggle d-flex align-items-center" 
@@ -89,29 +119,8 @@
                   </li>
                   <li><hr class="dropdown-divider"></li>
                   <li>
-                    <router-link class="dropdown-item" :to="{ name: 'profile' }">
-                      <i class="bi bi-person me-2"></i>Profile
-                    </router-link>
-                  </li>
-                  <li>
-                    <router-link class="dropdown-item" :to="{ name: 'favorites' }">
-                      <i class="bi bi-heart me-2"></i>Favorites
-                    </router-link>
-                  </li>
-                  <li>
-                    <router-link class="dropdown-item" :to="{ name: 'my-recipes' }">
-                      <i class="bi bi-journal-text me-2"></i>My Recipes
-                    </router-link>
-                  </li>
-                  <li>
-                    <router-link class="dropdown-item" :to="{ name: 'family-recipes' }">
-                      <i class="bi bi-people me-2"></i>Family Recipes
-                    </router-link>
-                  </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li>
                     <a class="dropdown-item text-danger" href="#" @click.prevent="logout">
-                      <i class="bi bi-box-arrow-right me-2"></i>התנתקות
+                      <i class="bi bi-box-arrow-right me-2"></i>Logout
                     </a>
                   </li>
                 </ul>
@@ -148,7 +157,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              <i class="bi bi-plus-circle me-2"></i>צור מתכון חדש
+              <i class="bi bi-plus-circle me-2"></i>Create New Recipe
             </h5>
             <button 
               @click="showCreateRecipeModal = false" 
@@ -159,16 +168,16 @@
           <div class="modal-body">
             <div class="text-center py-5">
               <i class="bi bi-journal-text display-1 text-primary mb-3"></i>
-              <h4>יצירת מתכון חדש</h4>
+              <h4>Create a New Recipe</h4>
               <p class="text-muted mb-4">
-                עבור לעמוד "המתכונים שלי" כדי ליצור מתכון חדש עם כל הפרטים
+                Go to the "My Recipes" page to create a new recipe with all the details
               </p>
               <router-link 
                 to="/my-recipes" 
                 class="btn btn-primary btn-lg"
                 @click="showCreateRecipeModal = false"
               >
-                <i class="bi bi-arrow-right me-2"></i>עבור לעמוד המתכונים שלי
+                <i class="bi bi-arrow-right me-2"></i>Go to My Recipes Page
               </router-link>
             </div>
           </div>
@@ -195,7 +204,17 @@ export default {
     });
 
     const username = computed(() => {
-      return store.username || localStorage.getItem('user') || 'משתמש';
+      if (store.username) return store.username;
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const userObj = JSON.parse(userStr);
+          return userObj.username || 'User';
+        } catch {
+          return 'User';
+        }
+      }
+      return 'User';
     });
 
     const showCreateRecipeModal = ref(false);
@@ -319,5 +338,23 @@ footer {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+.personal-dropdown-menu {
+  border-left: 4px solid #17a2b8;
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding-left: 0.5rem;
+}
+.personal-dropdown-menu .dropdown-item {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  font-size: 1rem;
+  padding-left: 1.5rem;
+  border: none;
+}
+.personal-dropdown-menu .dropdown-item i {
+  margin-left: 0.5rem;
+  font-size: 1.1em;
 }
 </style>
