@@ -5,7 +5,7 @@
         <div class="card shadow">
           <div class="card-header bg-success text-white text-center">
             <h3 class="mb-0">
-              <i class="bi bi-box-arrow-in-right"></i> התחברות לאתר
+              <i class="bi bi-box-arrow-in-right"></i> Login to the Site
             </h3>
           </div>
           <div class="card-body p-4">
@@ -13,7 +13,7 @@
               <!-- Username Field -->
               <div class="mb-3">
                 <label for="username" class="form-label">
-                  <i class="bi bi-person"></i> שם משתמש
+                  <i class="bi bi-person"></i> Username
                 </label>
                 <input 
                   id="username"
@@ -21,18 +21,18 @@
                   type="text" 
                   class="form-control"
                   :class="{ 'is-invalid': v$.username.$error, 'is-valid': !v$.username.$error && state.username }"
-                  placeholder="הכנס שם משתמש"
+                  placeholder="Enter username"
                   @blur="v$.username.$touch()"
                 />
                 <div v-if="v$.username.$error" class="invalid-feedback">
-                  <div v-if="v$.username.required.$invalid">שם משתמש הוא שדה חובה</div>
+                  <div v-if="v$.username.required.$invalid">Username is required</div>
                 </div>
               </div>
 
               <!-- Password Field -->
               <div class="mb-3">
                 <label for="password" class="form-label">
-                  <i class="bi bi-lock"></i> סיסמה
+                  <i class="bi bi-lock"></i> Password
                 </label>
                 <div class="input-group">
                   <input 
@@ -41,7 +41,7 @@
                     :type="showPassword ? 'text' : 'password'" 
                     class="form-control"
                     :class="{ 'is-invalid': v$.password.$error, 'is-valid': !v$.password.$error && state.password }"
-                    placeholder="הכנס סיסמה"
+                    placeholder="Enter password"
                     @blur="v$.password.$touch()"
                   />
                   <button 
@@ -53,7 +53,11 @@
                   </button>
                 </div>
                 <div v-if="v$.password.$error" class="invalid-feedback">
-                  <div v-if="v$.password.required.$invalid">סיסמה היא שדה חובה</div>
+                  <div v-if="v$.password.required.$invalid">Password is required</div>
+                  <div v-if="v$.password.minLength.$invalid">Password must be at least 8 characters</div>
+                  <div v-if="v$.password.hasUpperCase.$invalid">Password must contain at least one uppercase letter</div>
+                  <div v-if="v$.password.hasNumber.$invalid">Password must contain at least one number</div>
+                  <div v-if="v$.password.alphaNum && !v$.password.alphaNum.$response">Password can contain only letters and numbers</div>
                 </div>
               </div>
 
@@ -66,7 +70,7 @@
                   v-model="rememberMe"
                 />
                 <label class="form-check-label" for="rememberMe">
-                  זכור אותי
+                  Remember me
                 </label>
               </div>
 
@@ -79,7 +83,7 @@
                 >
                   <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
                   <i v-else class="bi bi-box-arrow-in-right me-2"></i>
-                  {{ loading ? 'מתחבר...' : 'התחברות' }}
+                  {{ loading ? 'Logging in...' : 'Login' }}
                 </button>
               </div>
             </form>
@@ -87,9 +91,9 @@
             <!-- Register Link -->
             <div class="text-center mt-3">
               <p class="mb-0">
-                אין לך חשבון? 
+                Don't have an account? 
                 <router-link to="/register" class="text-decoration-none">
-                  <i class="bi bi-person-plus"></i> הירשם כאן
+                  <i class="bi bi-person-plus"></i> Register here
                 </router-link>
               </p>
             </div>
@@ -103,7 +107,7 @@
 <script>
 import { reactive, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required } from '@vuelidate/validators';
+import { required, minLength, helpers } from '@vuelidate/validators';
 import { useRouter } from 'vue-router';
 
 export default {
@@ -119,9 +123,19 @@ export default {
       password: '',
     });
 
+    const hasUpperCase = helpers.regex(/[A-Z]/);
+    const hasNumber = helpers.regex(/[0-9]/);
+    const alphaNum = helpers.regex(/^[a-zA-Z0-9]+$/);
+
     const rules = {
       username: { required },
-      password: { required }
+      password: {
+        required,
+        minLength: minLength(8),
+        hasUpperCase,
+        hasNumber,
+        alphaNum
+      }
     };
 
     const v$ = useVuelidate(rules, state);
@@ -130,7 +144,7 @@ export default {
       const isValid = await v$.value.$validate();
       
       if (!isValid) {
-        window.toast('שגיאה', 'אנא תקן את השגיאות בטופס', 'danger');
+        window.toast('Error', 'Please fix the errors in the form', 'danger');
         return;
       }
 
@@ -145,6 +159,9 @@ export default {
         // Save user data to store
         window.store.login(state.username);
         
+        // Save user to localStorage for isLoggedIn
+        localStorage.setItem('user', JSON.stringify({ username: state.username }));
+        
         // Save remember me preference
         if (rememberMe.value) {
           localStorage.setItem('rememberMe', 'true');
@@ -154,14 +171,14 @@ export default {
           localStorage.removeItem('username');
         }
         
-        window.toast("התחברות מוצלחת", `ברוך הבא ${state.username}!`, "success");
+        window.toast("Login successful", `Welcome ${state.username}!`, "success");
         
         // Redirect to home page or previous page
         // router.push('/main');
         router.push('/');
       } catch (err) {
-        const errorMessage = err.response?.data?.message || 'אירעה שגיאה';
-        window.toast("שגיאה", errorMessage, "danger");
+        const errorMessage = err.response?.data?.message || 'An error occurred';
+        window.toast("Error", errorMessage, "danger");
       } finally {
         loading.value = false;
       }

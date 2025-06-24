@@ -5,7 +5,7 @@
         <div class="card shadow">
           <div class="card-header bg-primary text-white text-center">
             <h3 class="mb-0">
-              <i class="bi bi-person-plus"></i> הרשמה לאתר
+              <i class="bi bi-person-plus"></i> Sign Up
             </h3>
           </div>
           <div class="card-body p-4">
@@ -13,7 +13,7 @@
               <!-- Username Field -->
               <div class="mb-3">
                 <label for="username" class="form-label">
-                  <i class="bi bi-person"></i> שם משתמש
+                  <i class="bi bi-person"></i> Username
                 </label>
                 <input 
                   id="username"
@@ -21,20 +21,77 @@
                   type="text" 
                   class="form-control"
                   :class="{ 'is-invalid': v$.username.$error, 'is-valid': !v$.username.$error && state.username }"
-                  placeholder="הכנס שם משתמש"
+                  placeholder="Enter username"
                   @blur="v$.username.$touch()"
                 />
                 <div v-if="v$.username.$error" class="invalid-feedback">
-                  <div v-if="v$.username.required.$invalid">שם משתמש הוא שדה חובה</div>
-                  <div v-if="v$.username.minLength.$invalid">שם משתמש חייב להכיל לפחות 3 תווים</div>
-                  <div v-if="v$.username.alphaNum.$invalid">שם משתמש יכול להכיל רק אותיות ומספרים</div>
+                  <div v-if="v$.username.required.$invalid">Username is required</div>
+                  <div v-if="v$.username.minLength.$invalid">Username must be at least 3 characters</div>
+                  <div v-if="v$.username.alphaNum.$invalid">Username can contain only letters and numbers</div>
+                </div>
+              </div>
+
+              <!-- First Name Field -->
+              <div class="mb-3">
+                <label for="firstname" class="form-label">
+                  <i class="bi bi-person"></i> First Name
+                </label>
+                <input
+                  id="firstname"
+                  v-model="state.firstname"
+                  type="text"
+                  class="form-control"
+                  :class="{ 'is-invalid': v$.firstname.$error, 'is-valid': !v$.firstname.$error && state.firstname }"
+                  placeholder="Enter first name"
+                  @blur="v$.firstname.$touch()"
+                />
+                <div v-if="v$.firstname.$error" class="invalid-feedback">
+                  <div v-if="v$.firstname.required.$invalid">First name is required</div>
+                </div>
+              </div>
+
+              <!-- Last Name Field -->
+              <div class="mb-3">
+                <label for="lastname" class="form-label">
+                  <i class="bi bi-person"></i> Last Name
+                </label>
+                <input
+                  id="lastname"
+                  v-model="state.lastname"
+                  type="text"
+                  class="form-control"
+                  :class="{ 'is-invalid': v$.lastname.$error, 'is-valid': !v$.lastname.$error && state.lastname }"
+                  placeholder="Enter last name"
+                  @blur="v$.lastname.$touch()"
+                />
+                <div v-if="v$.lastname.$error" class="invalid-feedback">
+                  <div v-if="v$.lastname.required.$invalid">Last name is required</div>
+                </div>
+              </div>
+
+              <!-- Country Field -->
+              <div class="mb-3">
+                <label for="country" class="form-label">
+                  <i class="bi bi-globe"></i> Country
+                </label>
+                <input
+                  id="country"
+                  v-model="state.country"
+                  type="text"
+                  class="form-control"
+                  :class="{ 'is-invalid': v$.country.$error, 'is-valid': !v$.country.$error && state.country }"
+                  placeholder="Enter country"
+                  @blur="v$.country.$touch()"
+                />
+                <div v-if="v$.country.$error" class="invalid-feedback">
+                  <div v-if="v$.country.required.$invalid">Country is required</div>
                 </div>
               </div>
 
               <!-- Email Field -->
               <div class="mb-3">
                 <label for="email" class="form-label">
-                  <i class="bi bi-envelope"></i> כתובת אימייל
+                  <i class="bi bi-envelope"></i> Email Address
                 </label>
                 <input 
                   id="email"
@@ -42,19 +99,19 @@
                   type="email" 
                   class="form-control"
                   :class="{ 'is-invalid': v$.email.$error, 'is-valid': !v$.email.$error && state.email }"
-                  placeholder="הכנס כתובת אימייל"
+                  placeholder="Enter email"
                   @blur="v$.email.$touch()"
                 />
                 <div v-if="v$.email.$error" class="invalid-feedback">
-                  <div v-if="v$.email.required.$invalid">כתובת אימייל היא שדה חובה</div>
-                  <div v-if="v$.email.email.$invalid">כתובת אימייל לא תקינה</div>
+                  <div v-if="v$.email.required.$invalid">Email is required</div>
+                  <div v-if="v$.email.email.$invalid">Invalid email address</div>
                 </div>
               </div>
 
               <!-- Password Field -->
               <div class="mb-3">
                 <label for="password" class="form-label">
-                  <i class="bi bi-lock"></i> סיסמה
+                  <i class="bi bi-lock"></i> Password
                 </label>
                 <div class="input-group">
                   <input 
@@ -63,7 +120,7 @@
                     :type="showPassword ? 'text' : 'password'" 
                     class="form-control"
                     :class="{ 'is-invalid': v$.password.$error, 'is-valid': !v$.password.$error && state.password }"
-                    placeholder="הכנס סיסמה"
+                    placeholder="Enter password"
                     @blur="v$.password.$touch()"
                   />
                   <button 
@@ -75,20 +132,20 @@
                   </button>
                 </div>
                 <div v-if="v$.password.$error" class="invalid-feedback">
-                  <div v-if="v$.password.required.$invalid">סיסמה היא שדה חובה</div>
-                  <div v-if="v$.password.minLength.$invalid">סיסמה חייבת להכיל לפחות 8 תווים</div>
-                  <div v-if="v$.password.hasUpperCase.$invalid">סיסמה חייבת להכיל לפחות אות גדולה אחת</div>
-                  <div v-if="v$.password.hasNumber.$invalid">סיסמה חייבת להכיל לפחות מספר אחד</div>
+                  <div v-if="v$.password.required.$invalid">Password is required</div>
+                  <div v-if="v$.password.minLength.$invalid">Password must be at least 8 characters</div>
+                  <div v-if="v$.password.hasUpperCase.$invalid">Password must contain at least one uppercase letter</div>
+                  <div v-if="v$.password.hasNumber.$invalid">Password must contain at least one number</div>
                 </div>
                 <div class="form-text">
-                  <small>הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה ומספר</small>
+                  <small>Password must be at least 8 characters long, contain an uppercase letter and a number</small>
                 </div>
               </div>
 
               <!-- Confirm Password Field -->
               <div class="mb-3">
                 <label for="confirmPassword" class="form-label">
-                  <i class="bi bi-lock-fill"></i> אישור סיסמה
+                  <i class="bi bi-lock-fill"></i> Confirm Password
                 </label>
                 <div class="input-group">
                   <input 
@@ -97,7 +154,7 @@
                     :type="showConfirmPassword ? 'text' : 'password'" 
                     class="form-control"
                     :class="{ 'is-invalid': v$.confirmPassword.$error, 'is-valid': !v$.confirmPassword.$error && state.confirmPassword }"
-                    placeholder="הכנס סיסמה שוב"
+                    placeholder="Re-enter password"
                     @blur="v$.confirmPassword.$touch()"
                   />
                   <button 
@@ -109,8 +166,7 @@
                   </button>
                 </div>
                 <div v-if="v$.confirmPassword.$error" class="invalid-feedback">
-                  <div v-if="v$.confirmPassword.required.$invalid">אישור סיסמה הוא שדה חובה</div>
-                  <div v-if="v$.confirmPassword.sameAsPassword.$invalid">הסיסמאות אינן תואמות</div>
+                  {{ v$.confirmPassword.$errors[0]?.$message }}
                 </div>
               </div>
 
@@ -123,7 +179,7 @@
                 >
                   <span v-if="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
                   <i v-else class="bi bi-person-plus me-2"></i>
-                  {{ loading ? 'מבצע הרשמה...' : 'הרשמה' }}
+                  {{ loading ? 'Registering...' : 'Sign Up' }}
                 </button>
               </div>
             </form>
@@ -131,9 +187,9 @@
             <!-- Login Link -->
             <div class="text-center mt-3">
               <p class="mb-0">
-                כבר יש לך חשבון? 
+                Already have an account? 
                 <router-link to="/login" class="text-decoration-none">
-                  <i class="bi bi-box-arrow-in-right"></i> התחבר כאן
+                  <i class="bi bi-box-arrow-in-right"></i> Log in here
                 </router-link>
               </p>
             </div>
@@ -147,8 +203,9 @@
 <script>
 import { reactive, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required, minLength, email, sameAs, helpers } from '@vuelidate/validators';
+import { required, minLength, email, helpers } from '@vuelidate/validators';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 export default {
   name: "RegisterPage",
@@ -160,15 +217,23 @@ export default {
 
     const state = reactive({
       username: '',
+      firstname: '',
+      lastname: '',
+      country: '',
       email: '',
       password: '',
       confirmPassword: '',
+      profilePic: ''
     });
 
-    // Custom validators
+    // Custom validations
     const alphaNum = helpers.regex(/^[a-zA-Z0-9]+$/);
     const hasUpperCase = helpers.regex(/[A-Z]/);
     const hasNumber = helpers.regex(/[0-9]/);
+
+    const passwordsMatch = (value) => {
+      return value === state.password;
+    };
 
     const rules = {
       username: { 
@@ -176,6 +241,9 @@ export default {
         minLength: minLength(3),
         alphaNum
       },
+      firstname: { required },
+      lastname: { required },
+      country: { required },
       email: { 
         required, 
         email 
@@ -186,36 +254,44 @@ export default {
         hasUpperCase,
         hasNumber
       },
-      confirmPassword: { 
-        required, 
-        sameAsPassword: sameAs(() => state.password) 
-      }
+      confirmPassword: {
+        required,
+        passwordsMatch: helpers.withMessage(
+          'Passwords do not match',
+          passwordsMatch
+        )
+      },
+      profilePic: {}
     };
 
     const v$ = useVuelidate(rules, state);
 
     const register = async () => {
       const isValid = await v$.value.$validate();
-      
+
       if (!isValid) {
-        window.toast('שגיאה', 'אנא תקן את השגיאות בטופס', 'danger');
+        window.toast('Error', 'Please fix the form errors', 'danger');
         return;
       }
 
       loading.value = true;
 
       try {
-        await window.axios.post('/register', {
+        await axios.post('http://localhost:3001/Register', {
           username: state.username,
+          firstname: state.firstname,
+          lastname: state.lastname,
+          country: state.country,
           email: state.email,
-          password: state.password
+          password: state.password,
+          profilePic: state.profilePic
         });
-        
-        window.toast("הרשמה מוצלחת", "החשבון נוצר בהצלחה! כעת תוכל להתחבר", "success");
+
+        window.toast("Registration successful", "Your account has been created. You can now log in", "success");
         router.push('/login');
       } catch (err) {
-        const errorMessage = err.response?.data?.message || 'אירעה שגיאה בהרשמה';
-        window.toast("שגיאה בהרשמה", errorMessage, "danger");
+        const errorMessage = err.response?.data?.message || 'An error occurred during registration';
+        window.toast("Registration Error", errorMessage, "danger");
       } finally {
         loading.value = false;
       }
@@ -227,7 +303,7 @@ export default {
       register, 
       loading, 
       showPassword, 
-      showConfirmPassword 
+      showConfirmPassword
     };
   }
 };

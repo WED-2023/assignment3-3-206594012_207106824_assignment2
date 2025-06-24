@@ -111,14 +111,13 @@ export default {
   mounted() {
     this.checkLoginStatus()
     this.loadRandomRecipes()
-    if (this.isLoggedIn) {
-      this.loadWatchedRecipes()
-    }
   },
   methods: {
     checkLoginStatus() {
-      // Check if user is logged in from store or localStorage
       this.isLoggedIn = !!localStorage.getItem('user') || !!this.$store?.state?.user
+      if (this.isLoggedIn) {
+        this.loadWatchedRecipes()
+      }
     },
     
     async loadRandomRecipes() {
@@ -157,6 +156,13 @@ export default {
     
     viewRecipe(recipeId) {
       this.$router.push(`/recipe/${recipeId}`)
+    }
+  },
+  watch: {
+    isLoggedIn(newVal) {
+      if (newVal) {
+        this.loadWatchedRecipes()
+      }
     }
   }
 }
