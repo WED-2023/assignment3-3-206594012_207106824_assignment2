@@ -90,11 +90,11 @@
                     </router-link>
                   </li>
                   <li><hr class="dropdown-divider"></li>
-                  <li>
+                  <!-- <li>
                     <router-link class="dropdown-item" :to="{ name: 'profile' }">
                       <i class="bi bi-person me-2"></i>Profile
                     </router-link>
-                  </li>
+                  </li> -->
                   <li>
                     <router-link class="dropdown-item" :to="{ name: 'favorites' }">
                       <i class="bi bi-heart me-2"></i>Favorites
