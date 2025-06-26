@@ -65,35 +65,7 @@
                   <i class="bi bi-plus-circle me-1"></i>Create Recipe
                 </button>
               </li>
-              <!-- Personal Dropdown -->
-              <li class="nav-item dropdown">
-                <a 
-                  class="nav-link dropdown-toggle d-flex align-items-center" 
-                  href="#" 
-                  role="button" 
-                  data-bs-toggle="dropdown" 
-                  aria-expanded="false"
-                >
-                  Personal
-                </a>
-                <ul class="dropdown-menu personal-dropdown-menu" style="min-width: 160px;">
-                  <li>
-                    <router-link class="dropdown-item d-flex align-items-center" :to="{ name: 'favorites' }">
-                      Favorites <i class="bi bi-heart ms-auto"></i>
-                    </router-link>
-                  </li>
-                  <li>
-                    <router-link class="dropdown-item d-flex align-items-center" :to="{ name: 'my-recipes' }">
-                      Private <i class="bi bi-journal-text ms-auto"></i>
-                    </router-link>
-                  </li>
-                  <li>
-                    <router-link class="dropdown-item d-flex align-items-center" :to="{ name: 'family-recipes' }">
-                      La Familia <i class="bi bi-people ms-auto"></i>
-                    </router-link>
-                  </li>
-                </ul>
-              </li>
+
               <!-- User Dropdown -->
               <li class="nav-item dropdown">
                 <a 
