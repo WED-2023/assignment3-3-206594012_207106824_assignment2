@@ -106,8 +106,8 @@ export default {
       console.log('Sort changed to:', sortBy)
     },
     
-    viewRecipe(recipeId) {
-      this.$router.push(`/recipe/${recipeId}`)
+    viewRecipe(recipeID) {
+      this.$router.push(`/recipes/fullview/${recipeID}`)
     },
     
     saveLastSearch(searchParams) {

@@ -6,7 +6,7 @@
         <!-- Brand/Logo -->
         <router-link class="navbar-brand d-flex align-items-center" :to="{ name: 'home' }">
           <i class="bi bi-cup-hot me-2"></i>
-          <span class="fw-bold">Vue Recipes</span>
+          <span class="fw-bold">Recipes Website</span>
         </router-link>
 
         <!-- Mobile Toggle Button -->
@@ -62,7 +62,7 @@
             <template v-else>
               <li class="nav-item">
                 <button @click="showCreateRecipeModal = true" class="nav-link btn btn-outline-light btn-sm me-2">
-                  <i class="bi bi-plus-circle me-1"></i>צור מתכון
+                  <i class="bi bi-plus-circle me-1"></i>Create Recipe
                 </button>
               </li>
               <li class="nav-item dropdown">
@@ -108,10 +108,15 @@
                       <i class="bi bi-people me-2"></i>Family Recipes
                     </router-link>
                   </li>
+                  <li>
+                    <router-link class="dropdown-item" :to="{ name: 'MealPlan' }">
+                      <i class="bi bi-list-task me-2"></i>Meal Plan
+                    </router-link>
+                  </li>
                   <li><hr class="dropdown-divider"></li>
                   <li>
                     <a class="dropdown-item text-danger" href="#" @click.prevent="logout">
-                      <i class="bi bi-box-arrow-right me-2"></i>התנתקות
+                      <i class="bi bi-box-arrow-right me-2"></i>Log Out
                     </a>
                   </li>
                 </ul>
@@ -132,7 +137,7 @@
       <div class="container">
         <p class="mb-0">
           <i class="bi bi-heart-fill text-danger"></i>
-          Vue Recipes - פותח עם Vue.js ו-Bootstrap
+           Recipes Website Of Adva, Shani and Lee
         </p>
       </div>
     </footer>
@@ -148,7 +153,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">
-              <i class="bi bi-plus-circle me-2"></i>צור מתכון חדש
+              <i class="bi bi-plus-circle me-2"></i>Create New Recipe
             </h5>
             <button 
               @click="showCreateRecipeModal = false" 
@@ -159,16 +164,16 @@
           <div class="modal-body">
             <div class="text-center py-5">
               <i class="bi bi-journal-text display-1 text-primary mb-3"></i>
-              <h4>יצירת מתכון חדש</h4>
+              <h4>Create New Recipe</h4>
               <p class="text-muted mb-4">
-                עבור לעמוד "המתכונים שלי" כדי ליצור מתכון חדש עם כל הפרטים
+                Go to "My Recipes" to create a new recipe with all the details
               </p>
               <router-link 
-                to="/my-recipes" 
+                :to="{ name: 'my-recipes' }" 
                 class="btn btn-primary btn-lg"
                 @click="showCreateRecipeModal = false"
               >
-                <i class="bi bi-arrow-right me-2"></i>עבור לעמוד המתכונים שלי
+                <i class="bi bi-arrow-right me-2"></i>Go to "My Recipes"
               </router-link>
             </div>
           </div>
@@ -192,6 +197,7 @@ export default {
     // Computed properties for reactive navigation
     const isLoggedIn = computed(() => {
       return !!store.username || !!localStorage.getItem('user');
+      // return store.isLoggedIn();
     });
 
     const username = computed(() => {
@@ -200,7 +206,17 @@ export default {
 
     const showCreateRecipeModal = ref(false);
 
-    const logout = () => {
+    const logout = async () => {
+      try {
+        const res = await fetch(`${store.server_domain}/auth/Logout`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+        const data = await res.json();
+        console.log("Logout server response:", data.message);
+      } catch (err) {
+        console.error("Failed to logout from server:", err);
+      }
       // Clear store
       store.logout();
       
@@ -210,7 +226,7 @@ export default {
       localStorage.removeItem('username');
       
       // Show success message
-      toast("התנתקות מוצלחת", "התנתקת בהצלחה מהמערכת", "success");
+      toast("You have successfully logged out of the system", "success");
       
       // Redirect to home
       router.push("/").catch(() => {});

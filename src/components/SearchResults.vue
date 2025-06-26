@@ -44,10 +44,10 @@
       <div class="row">
         <div 
           v-for="recipe in sortedResults" 
-          :key="recipe.id" 
+          :key="recipe.recipeID" 
           class="col-md-6 col-lg-4 mb-4"
         >
-          <div class="recipe-card card h-100" @click="viewRecipe(recipe.id)">
+          <div class="recipe-card card h-100" @click="viewRecipe(recipe.recipeID)">
             <img :src="recipe.image" :alt="recipe.title" class="card-img-top recipe-image" />
             <div class="card-body">
               <h5 class="card-title recipe-title">{{ recipe.title }}</h5>
@@ -85,7 +85,7 @@
 <script>
 export default {
   name: 'SearchResults',
-  props: {
+  props: {  
     results: {
       type: Array,
       default: () => []
@@ -103,6 +103,9 @@ export default {
     return {
       sortBy: 'popularity'
     }
+  },
+  mounted() {
+    console.log("Search Results:", this.results);
   },
   computed: {
     sortedResults() {

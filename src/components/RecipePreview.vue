@@ -95,7 +95,7 @@ export default {
           path = `/user/my-recipes/${this.recipe.recipeID}`;
         }
       } else { // API
-        path = `/recipes/fullview/${this.recipe.id}`;
+        path = `/recipes/fullview/${this.recipe.recipeID}`;
       }
 
       this.$router.push(path);

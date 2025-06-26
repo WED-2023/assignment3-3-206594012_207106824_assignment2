@@ -154,13 +154,18 @@ export default {
         await window.axios.post('/login', {
           username: state.username,
           password: state.password
-        });
+        }, { withCredentials: true });
         
+        localStorage.removeItem('user');
         // Save user data to store
         window.store.login(state.username);
         
         // Save user to localStorage for isLoggedIn
-        localStorage.setItem('user', JSON.stringify({ username: state.username }));
+        // localStorage.setItem('user', JSON.stringify({ username: state.username }));
+        localStorage.setItem('username', state.username);
+        // localStorage.setItem("username", response.data.username);
+
+
         
         // Save remember me preference
         if (rememberMe.value) {

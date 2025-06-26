@@ -95,30 +95,40 @@
 <script>
 import axios from 'axios'
 import RecipePreviewList from '@/components/RecipePreviewList.vue'
+import store from '@/store'
+
 
 export default {
   name: 'HomePage',
   components: { RecipePreviewList },
   data() {
     return {
-      isLoggedIn: false,
+      // isLoggedIn: false,
       loadingRandom: false,
       loadingWatched: false,
       randomRecipes: [],
       watchedRecipes: []
     }
   },
+  computed: {
+    isLoggedIn() {
+      return store.isLoggedIn();
+    }
+  },
   mounted() {
-    this.checkLoginStatus()
-    this.loadRandomRecipes()
+    // this.checkLoginStatus()
+    this.loadRandomRecipes();
+    if (this.isLoggedIn) {
+      this.loadWatchedRecipes();
+    }
   },
   methods: {
-    checkLoginStatus() {
-      this.isLoggedIn = !!localStorage.getItem('user') || !!this.$store?.state?.user
-      if (this.isLoggedIn) {
-        this.loadWatchedRecipes()
-      }
-    },
+    // checkLoginStatus() {
+    //   this.isLoggedIn = !!localStorage.getItem('username') || !!this.$store?.state?.user
+    //   if (this.isLoggedIn) {
+    //     this.loadWatchedRecipes()
+    //   }
+    // },
     
     async loadRandomRecipes() {
       this.loadingRandom = true
@@ -139,7 +149,8 @@ export default {
       this.loadingWatched = true
       try {
         // קריאה אמיתית ל-backend
-        const response = await axios.get('/recipes/watched', {
+        const response = await axios.get('user/recipes/watched', {
+          withCredentials: true,
           headers: {
             // אם יש צורך בטוקן, יש להוסיף אותו כאן
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -158,13 +169,13 @@ export default {
       this.$router.push(`/recipe/${recipeId}`)
     }
   },
-  watch: {
-    isLoggedIn(newVal) {
-      if (newVal) {
-        this.loadWatchedRecipes()
-      }
-    }
-  }
+  // watch: {
+  //   isLoggedIn(newVal) {
+  //     if (newVal) {
+  //       this.loadWatchedRecipes()
+  //     }
+  //   }
+  // }
 }
 </script>
 

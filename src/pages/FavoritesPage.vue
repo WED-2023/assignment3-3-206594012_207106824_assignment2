@@ -22,10 +22,15 @@
         <div v-else-if="recipes.length > 0" class="row">
           <div 
             v-for="recipe in recipes" 
-            :key="recipe.id" 
+            :key="recipe.recipeID" 
             class="col-md-6 col-lg-4 mb-4"
           >
-            <RecipePreview :recipe="recipe" />
+            <router-link 
+              :to="getRecipeRoute(recipe)" 
+              class="text-decoration-none text-dark"
+            >
+              <RecipePreview :recipe="recipe" />
+            </router-link>
           </div>
         </div>
 
@@ -75,6 +80,23 @@ export default {
       this.loading = false;
     }
   },
+  methods: {
+    getRecipeRoute(recipe) {
+      const recipeID = recipe.recipeID;
+      const isFamily = recipe.isFamily === true || recipe.isFamily === 1;
+
+      if (recipeID.startsWith('RU')) {
+        if (isFamily) {
+          return { name: 'FamilyRecipeView', params: { recipeID: recipeID } };
+        } else {
+          return { name: 'MyRecipeView', params: { recipeID: recipeID } };
+        }
+      } else {
+        return { name: 'FullRecipeView', params: { recipeID: recipeID } };
+      }
+    }
+
+  }
 };
 </script>
 

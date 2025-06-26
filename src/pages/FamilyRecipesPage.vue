@@ -32,22 +32,26 @@
             :key="recipe.recipeID" 
             class="col-md-6 col-lg-4 mb-4"
           >
-            <div class="card h-100 family-recipe-card">
+            
+            <router-link 
+              :to="{ name: 'FamilyRecipeView', params: { recipeID: recipe.recipeID } }"
+              class="card h-100 family-recipe-card text-decoration-none text-dark"
+            >
               <div class="recipe-image-container position-relative">
                 <img 
                   :src="recipe.image" 
                   :alt="recipe.title"
                   class="card-img-top recipe-image"
                 />
-                
-                <!-- Family Member Badge -->
+
+                <!--Family member badge-->
                 <div class="position-absolute top-0 start-0 m-2">
                   <span class="badge bg-warning text-dark">
                     <i class="bi bi-person-heart"></i> {{ recipe.familyMember }}
                   </span>
                 </div>
-                
-                <!-- Occasion Badge -->
+
+                <!--Occasion member badge-->
                 <div class="position-absolute top-0 end-0 m-2">
                   <span class="badge bg-info">
                     <i class="bi bi-calendar-event"></i> {{ recipe.occasion }}
@@ -58,7 +62,7 @@
               <div class="card-body">
                 <h5 class="card-title">{{ recipe.title }}</h5>
                 
-                <!-- Recipe Meta -->
+                <!--Recipe Meta-->
                 <div class="recipe-meta mb-2">
                   <span class="badge bg-primary me-1">
                     <i class="bi bi-clock"></i> {{ recipe.readyInMinutes }} min
@@ -68,7 +72,7 @@
                   </span>
                 </div>
 
-                <!-- Dietary Info -->
+                <!--Dietary Info-->
                 <div class="dietary-info mb-3">
                   <span v-if="recipe.vegetarian" class="badge bg-info me-1">
                     <i class="bi bi-flower1"></i> Vegetarian
@@ -78,7 +82,7 @@
                   </span>
                 </div>
               </div>
-            </div>
+            </router-link>
           </div>
         </div>
 
@@ -114,7 +118,6 @@
 import axios from 'axios';
 import store from '@/store';
 import CreateRecipeModal from '@/components/CreateRecipeModal.vue';
-
 
 export default {
   name: 'FamilyRecipesPage',

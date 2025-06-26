@@ -1,9 +1,8 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import routes from './router/index';
+import router from './router';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-import { createRouter, createWebHistory } from 'vue-router';
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
@@ -14,15 +13,18 @@ import store from './store';
 // Configure axios with backend URL
 axios.defaults.baseURL = store.server_domain;
 
-// Create router with guards
-const router = createRouter({
-  history: createWebHistory(),
-  routes: routes.routes
-});
+axios.defaults.withCredentials = true;
 
-// Apply route guards
-router.beforeEach(routes.beforeEach);
-router.afterEach(routes.afterEach);
+
+// // Create router with guards
+// const router = createRouter({
+//   history: createWebHistory(),
+//   routes: routes.routes
+// });
+
+// // Apply route guards
+// router.beforeEach(routes.beforeEach);
+// router.afterEach(routes.afterEach);
 
 const app = createApp(App);
 
@@ -31,6 +33,15 @@ app.use(VueAxios, axios);
 
 app.config.globalProperties.store = store;
 app.config.globalProperties.axios = axios;
+
+axios.get(`${store.server_domain}/session`, { withCredentials: true })
+  .then((res) => {
+    store.login(res.data.username);  
+  })
+  .catch(() => {
+    store.logout(); 
+  });
+
 
 app.config.globalProperties.toast = function (title, content, variant = null, append = false) {
   const toastContainerId = "toast-container";
@@ -75,6 +86,11 @@ window.toast = app.config.globalProperties.toast;
 
 // Make axios globally available
 window.axios = axios;
-window.store = store;
+window.store = store; // @ts-ignore
+
+const savedUsername = localStorage.getItem('username')|| localStorage.getItem('user');
+if (savedUsername) {
+  store.login(savedUsername); 
+}
 
 app.mount('#app');

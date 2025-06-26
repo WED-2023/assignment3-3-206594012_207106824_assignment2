@@ -18,18 +18,27 @@
 
       <ol class="list-group list-group-numbered">
         <li v-for="(item, index) in sortedMealPlan" :key="item.recipeID" class="list-group-item d-flex justify-content-between align-items-center">
-          <div>
-            <h5>{{ item.recipeTitle }}</h5>
-            <div class="small text-muted">Type: {{ item.recipeType }}</div>
-            <div class="mt-2">
-              <div class="progress" style="height: 20px;">
-                <div 
-                  class="progress-bar" 
-                  role="progressbar" 
-                  :style="{ width: getProgressPercentage(item) + '%' }"
-                  :aria-valuenow="getProgressPercentage(item)"
-                  aria-valuemin="0" aria-valuemax="100">
-                  {{ getProgressPercentage(item) }}%
+          <div class="d-flex align-items-center">
+            <img :src="item.image" alt="recipe image" class="me-3 rounded" style="width: 80px; height: 80px; object-fit: cover;">
+            <div>
+              <h5>{{ item.title }}</h5>
+              <div class="small text-muted">
+                <span v-if="item.vegan" class="badge bg-success me-1"><i class="bi bi-leaf"></i> Vegan</span>
+                <span v-if="item.vegetarian" class="badge bg-info me-1"><i class="bi bi-flower1"></i> Vegetarian</span>
+                <span v-if="item.glutenFree" class="badge bg-warning"><i class="bi bi-shield-check"></i> Gluten-Free</span>
+              </div>
+
+              <div class="small text-muted">Ready in {{ item.readyInMinutes }} minutes</div>
+              <div class="mt-2">
+                <div class="progress" style="height: 20px;">
+                  <div 
+                    class="progress-bar" 
+                    role="progressbar" 
+                    :style="{ width: getProgressPercentage(item) + '%' }"
+                    :aria-valuenow="getProgressPercentage(item)"
+                    aria-valuemin="0" aria-valuemax="100">
+                    {{ getProgressPercentage(item) }}%
+                  </div>
                 </div>
               </div>
             </div>
@@ -83,7 +92,7 @@ export default {
     async loadMealPlan() {
       this.loading = true;
       try {
-        const response = await axios.get(`${store.server_domain}/meal-plan`, { withCredentials: true });
+        const response = await axios.get(`${store.server_domain}/user/meal-plan`, { withCredentials: true });
         this.mealPlan = response.data;
       } catch (error) {
         console.error('Error loading meal plan:', error);
@@ -95,7 +104,7 @@ export default {
     async clearMealPlan() {
       if (!confirm('Are you sure you want to clear the meal plan?')) return;
       try {
-        await axios.delete(`${store.server_domain}/meal-plan`, { withCredentials: true });
+        await axios.delete(`${store.server_domain}/user/meal-plan`, { withCredentials: true });
         this.mealPlan = [];
       } catch (error) {
         console.error('Error clearing meal plan:', error);
@@ -104,7 +113,7 @@ export default {
 
     async removeFromMealPlan(item) {
       try {
-        await axios.delete(`${store.server_domain}/meal-plan/${item.recipeID}`, { withCredentials: true });
+        await axios.delete(`${store.server_domain}/user/meal-plan/${item.recipeID}`, { withCredentials: true });
         this.loadMealPlan();
       } catch (error) {
         console.error('Error removing recipe from meal plan:', error);
@@ -112,18 +121,21 @@ export default {
     },
 
     async moveUp(item) {
+      if (item.orderIndex === 1) return; 
       const newOrder = item.orderIndex - 1;
       await this.updateOrder(item.recipeID, newOrder);
     },
 
     async moveDown(item) {
+      if (item.orderIndex === this.mealPlan.length) return;
       const newOrder = item.orderIndex + 1;
       await this.updateOrder(item.recipeID, newOrder);
     },
 
+
     async updateOrder(recipeID, newOrder) {
       try {
-        await axios.patch(`${store.server_domain}/meal-plan/${recipeID}`, { orderIndex: newOrder }, { withCredentials: true });
+        await axios.patch(`${store.server_domain}/user/meal-plan/${recipeID}`, { orderIndex: newOrder }, { withCredentials: true });
         this.loadMealPlan();
       } catch (error) {
         console.error('Error updating order:', error);
@@ -141,6 +153,7 @@ export default {
 
   }
 };
+
 </script>
 
 <style scoped>

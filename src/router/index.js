@@ -1,3 +1,4 @@
+import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from "../pages/HomePage.vue";
 import NotFound from "../pages/NotFoundPage.vue";
 import store from "../store";
@@ -53,7 +54,7 @@ const routes = [
     }
   },
   {
-    path: "/recipe/:recipeId",
+    path: "/recipe/:recipeID",
     name: "recipe",
     component: () => import("../pages/RecipeViewPage.vue"),
     meta: {
@@ -89,17 +90,17 @@ const routes = [
     }
   },
   {
-    path: '/my-recipes/:recipeId',
+    path: '/user/my-recipes/:recipeID',
     name: 'MyRecipeView',
     component: RecipeViewPage
   },
   {
-    path: '/family-recipes/:recipeId',
+    path: '/user/family-recipes/:recipeID',
     name: 'FamilyRecipeView',
     component: RecipeViewPage
   },
   {
-  path: '/recipes/:recipeId/prepare',
+  path: '/recipes/:recipeID/prepare',
   name: 'PrepareRecipe',
   component: () => import("../pages/PrepareRecipePage.vue")
   },
@@ -113,14 +114,31 @@ const routes = [
     }
   },
   {
-    path: '/my-recipes',
+    path: '/user/my-recipes',
     name: 'my-recipes',
     component: () => import('@/pages/MyRecipesPage.vue')
   },
   {
-    path: '/family-recipes',
+    path: '/user/family-recipes',
     name: 'family-recipes',
     component: () => import('@/pages/FamilyRecipesPage.vue')
+  },
+  {
+    path: '/recipes/fullview/:recipeID',
+    name: 'FullRecipeView',
+    component: RecipeViewPage
+  },
+  {
+    path: '/user/my-recipes/:recipeID/prepare',
+    name: 'PrepareRecipePersonal',
+    component: () => import("../pages/PrepareRecipePage.vue"),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/user/family-recipes/:recipeID/prepare',
+    name: 'PrepareRecipeFamily',
+    component: () => import("../pages/PrepareRecipePage.vue"),
+    meta: { requiresAuth: true }
   },
   {
     path: "/:catchAll(.*)",
@@ -133,54 +151,41 @@ const routes = [
   }
 ];
 
-// Route Guards
-const router = {
-  routes,
-  
-  // Global before each guard
-  beforeEach(to, from, next) {
-    // Update page title
-    if (to.meta && to.meta.title) {
-      document.title = to.meta.title;
-    }
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+});
 
-    // Check if user is authenticated
-    const isAuthenticated = store.username || localStorage.getItem('user');
-
-    // Handle guest-only routes (login, register)
-    if (to.meta.guestOnly && isAuthenticated) {
-      next({ name: 'home' });
-      return;
-    }
-
-    // Handle protected routes
-    if (to.meta.requiresAuth && !isAuthenticated) {
-      // Save the intended destination
-      localStorage.setItem('redirectAfterLogin', to.fullPath);
-      
-      // Show toast notification
-      if (window.toast) {
-        window.toast('גישה מוגבלת', 'עליך להתחבר כדי לגשת לעמוד זה', 'warning');
-      }
-      
-      next({ name: 'login' });
-      return;
-    }
-
-    // Continue to the route
-    next();
-  },
-
-  // Global after each guard
-  afterEach(to) {
-    // Scroll to top on route change
-    window.scrollTo(0, 0);
-    
-    // Track page view (for analytics)
-    if (to.name !== 'notFound') {
-      console.log(`Navigated to: ${to.name}`);
-    }
+// Global Before Each Guard
+router.beforeEach((to, from, next) => {
+  if (to.meta && to.meta.title) {
+    document.title = to.meta.title;
   }
-};
+
+  const isAuthenticated = store.username || localStorage.getItem('username');
+
+  if (to.meta.guestOnly && isAuthenticated) {
+    next({ name: 'home' });
+    return;
+  }
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    localStorage.setItem('redirectAfterLogin', to.fullPath);
+    if (window.toast) {
+      window.toast('גישה מוגבלת', 'עליך להתחבר כדי לגשת לעמוד זה', 'warning');
+    }
+    next({ name: 'login' });
+    return;
+  }
+
+  next();
+});
+
+router.afterEach((to) => {
+  window.scrollTo(0, 0);  
+  if (to.name !== 'notFound') {
+    console.log(`Navigated to: ${to.name}`);
+  }
+});
 
 export default router;

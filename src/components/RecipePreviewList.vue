@@ -5,7 +5,7 @@
       <slot></slot>
     </h3>
     <div class="row">
-      <div class="col" v-for="r in recipes" :key="r.id">
+      <div class="col" v-for="r in recipes" :key="r.recipeID">
         <RecipePreview class="recipePreview" :recipe="r" :imageHeight="120" />
       </div>
     </div>
@@ -28,6 +28,9 @@ export default {
       type: Array,
       required: true
     }
+  },
+  mounted() {
+    console.log("RecipePreviewList recipes:", this.recipes);
   }
 };
 </script>

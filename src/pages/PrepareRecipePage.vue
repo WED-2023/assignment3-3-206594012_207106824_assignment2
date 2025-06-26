@@ -2,6 +2,10 @@
   <div class="container py-4">
     <h1 class="text-center mb-4 text-primary">Prepare: {{ recipeTitle }}</h1>
 
+    <div v-if="!isLoggedIn" class="alert alert-warning text-center">
+      Login required to mark steps and multiply quantities.
+    </div>
+
     <div class="mb-4 text-center">
       <label class="form-label">Adjust servings:</label>
       <div class="input-group justify-content-center w-50 mx-auto">
@@ -27,11 +31,12 @@
     <div class="card shadow-sm">
       <div class="card-header bg-success text-white"><h5>Preparation Steps</h5></div>
       <div class="card-body">
-        <div v-for="step in instructions" :key="step.stepNumber" class="d-flex align-items-center mb-3">
+        <div v-for="step in instructions" :key="step.number" class="d-flex align-items-center mb-3">
           <input type="checkbox" class="form-check-input me-2"
-            :checked="progress.completedSteps.includes(step.stepNumber)"
-            @change="toggleStep(step.stepNumber)" />
-          <span>{{ step.stepNumber }}. {{ step.description }}</span>
+            :checked="progress.completedSteps.includes(step.number)"
+            @change="toggleStep(step.number)" 
+            :disabled="!isLoggedIn" />
+          <span>{{ step.number }}. {{ step.description }}</span>
         </div>
       </div>
     </div>
@@ -41,12 +46,14 @@
 <script>
 import axios from 'axios';
 import store from '@/store';
+// import { useUserStore } from '@/stores/user';
+
 
 export default {
   name: 'PrepareRecipePage',
   data() {
     return {
-      recipeId: null,
+      recipeID: null,
       recipeType: null,
       recipeTitle: '',
       baseServings: 1,
@@ -62,30 +69,36 @@ export default {
     this.loadPrepareData();
   },
 
+  mounted() {
+    console.log("store.username", store.username);
+    console.log("store.isLoggedIn()", store.isLoggedIn());
+  },
+
   methods: {
     determineRecipeType() {
       const path = this.$route.path;
-      if (path.startsWith('user/family-recipes/')) {
+      if (path.startsWith('/user/family-recipes/')) {
         this.recipeType = 'family';
-        this.recipeId = this.$route.params.recipeId;
-      } else if (path.startsWith('user/my-recipes/')) {
+        this.recipeID = this.$route.params.recipeID;
+      } else if (path.startsWith('/user/my-recipes/')) {
         this.recipeType = 'personal';
-        this.recipeId = this.$route.params.recipeId;
+        this.recipeID = this.$route.params.recipeID;
       } else if (path.startsWith('/recipes/')) {
         this.recipeType = 'spoonacular';
-        this.recipeId = this.$route.params.recipeId;
+        this.recipeID = this.$route.params.recipeID;
       }
     },
 
     async loadPrepareData() {
+      this.progress = { completedSteps: [] };
       try {
         let url;
         if (this.recipeType === 'personal') {
-          url = `${store.server_domain}/user/my-recipes/${this.recipeId}/prepare`;
+          url = `${store.server_domain}/user/my-recipes/${this.recipeID}/prepare`;
         } else if (this.recipeType === 'family') {
-          url = `${store.server_domain}/user/family-recipes/${this.recipeId}/prepare`;
+          url = `${store.server_domain}/user/family-recipes/${this.recipeID}/prepare`;
         } else if (this.recipeType === 'spoonacular') {
-          url = `${store.server_domain}/recipes/${this.recipeId}/prepare`;
+          url = `${store.server_domain}/recipes/${this.recipeID}/prepare`;
         }
 
         const response = await axios.get(url, { withCredentials: true });
@@ -96,8 +109,16 @@ export default {
         this.ingredients = data.ingredients;
         this.baseServings = data.servings;
         this.recipeTitle = data.title || 'Recipe';
+
+        if (this.isLoggedIn && Array.isArray(data.progress?.completedSteps)) {
+          this.progress = data.progress;
+        } else {
+          this.progress = { completedSteps: [] };
+        }
+
       } catch (error) {
         console.error('Error loading preparation data:', error);
+        this.progress = { completedSteps: [] };
       }
     },
 
@@ -107,6 +128,7 @@ export default {
     },
 
     toggleStep(stepNumber) {
+      if (!this.isLoggedIn) return;
       const isCompleted = this.progress.completedSteps.includes(stepNumber);
       if (isCompleted) {
         this.progress.completedSteps = this.progress.completedSteps.filter(num => num !== stepNumber);
@@ -117,8 +139,9 @@ export default {
     },
 
     async saveProgress(stepNumber) {
+        if (!this.isLoggedIn) return;
         try {
-            const url = `${store.server_domain}/user/recipes/${this.recipeId}/prepare/step`;
+            const url = `${store.server_domain}/user/recipes/${this.recipeID}/prepare/step`;
             await axios.post(url, { stepIndex: stepNumber }, { withCredentials: true });
         } catch (error) {
             console.error('Failed to save preparation progress:', error);
@@ -126,15 +149,22 @@ export default {
     },
 
     increaseServings() {
-      if (this.servingsMultiplier < 10) this.servingsMultiplier++;
+      if (this.isLoggedIn && this.servingsMultiplier < 10) {
+        this.servingsMultiplier++;
+      }
     },
 
     decreaseServings() {
-      if (this.servingsMultiplier > 1) this.servingsMultiplier--;
+      if (this.isLoggedIn && this.servingsMultiplier > 1) {
+        this.servingsMultiplier--;
+      }
     }
   },
 
   computed: {
+    isLoggedIn() {
+      return store.isLoggedIn();
+    },
     scaledIngredients() {
       return this.ingredients.map(ing => ({
         name: ing.name,

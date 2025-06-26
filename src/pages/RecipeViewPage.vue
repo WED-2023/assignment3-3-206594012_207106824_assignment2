@@ -51,7 +51,7 @@
                 </button>
               </div>
 
-              <p class="text-muted">{{ recipe.instructions }}</p>
+              <p class="text-muted" v-html="recipe.instructions"></p>
             </div>
           </div>
 
@@ -64,9 +64,9 @@
                 </div>
                 <div class="card-body">
                   <ul class="list-group list-group-flush">
-                    <li v-for="ingredient in recipe.ingredients" :key="ingredient.name"
+                    <li v-for="ingredient in recipe.ingredients" :key="ingredient.ingredientName || ingredient.name"
                       class="list-group-item d-flex justify-content-between align-items-center">
-                      <span>{{ ingredient.name }}</span>
+                      <span>{{ ingredient.ingredientName || ingredient.name}}</span>
                       <span class="badge bg-light text-dark">{{ formatAmount(ingredient) }}</span>
                     </li>
                   </ul>
@@ -75,7 +75,7 @@
             </div>
 
             <!-- Preparation Steps -->
-            <div class="col-md-8 mb-4" v-if="recipe.instructionsSteps && recipe.instructionsSteps.length">
+            <!-- <div class="col-md-8 mb-4" v-if="recipe.instructionsSteps && recipe.instructionsSteps.length">
               <div class="card shadow-sm">
                 <div class="card-header bg-success text-white">
                   <h5><i class="bi bi-list-ol me-2"></i> Preparation Steps</h5>
@@ -88,7 +88,7 @@
                   </ol>
                 </div>
               </div>
-            </div>
+            </div> -->
 
           </div>
         </div>
@@ -124,18 +124,36 @@ export default {
       recipeType: null
     };
   },
-  created() {
+  mounted() {
     this.determineRecipeType();
     this.loadRecipe();
   },
+
+  watch: {
+    '$route'() {
+      this.determineRecipeType();
+      this.loadRecipe();
+    }
+  },
   methods: {
+    // determineRecipeType() {
+    //   const path = this.$route.path.toLowerCase();
+    //   if (path.includes('/my-recipes/')) {
+    //     this.recipeType = 'personal';
+    //   } else if (path.includes('/family-recipes/')) {
+    //     this.recipeType = 'family';
+    //   } else if (path.includes('/recipes/fullview/')) {
+    //     this.recipeType = 'spoonacular';
+    //   }
+    // },
+
     determineRecipeType() {
-      const path = this.$route.path;
-      if (path.startsWith('/user/family-recipes/')) {
-        this.recipeType = 'family';
-      } else if (path.startsWith('/user/my-recipes/')) {
+      const routeName = this.$route.name;
+      if (routeName === 'MyRecipeView') {
         this.recipeType = 'personal';
-      } else if (path.startsWith('/recipes/fullview/')) {
+      } else if (routeName === 'FamilyRecipeView') {
+        this.recipeType = 'family';
+      } else if (routeName === 'FullRecipeView') {
         this.recipeType = 'spoonacular';
       }
     },
@@ -143,16 +161,23 @@ export default {
     async loadRecipe() {
       this.loading = true;
       try {
-        const recipeId = this.$route.params.recipeId;
+        const recipeID = this.$route.params.recipeID;
         let response;
         if (this.recipeType === 'family') {
-          response = await axios.get(`${store.server_domain}/user/family-recipes/${recipeId}`, { withCredentials: true });
+          response = await axios.get(`${store.server_domain}/user/family-recipes/${recipeID}`, { withCredentials: true });
         } else if (this.recipeType === 'personal') {
-          response = await axios.get(`${store.server_domain}/user/my-recipes/${recipeId}`, { withCredentials: true });
+          response = await axios.get(`${store.server_domain}/user/my-recipes/${recipeID}`, { withCredentials: true });
         } else if (this.recipeType === 'spoonacular') {
-          response = await axios.get(`${store.server_domain}/recipes/fullview/${recipeId}`, { withCredentials: true });
+          response = await axios.get(`${store.server_domain}/recipes/fullview/${recipeID}`, { withCredentials: true });
         }
         this.recipe = response.data;
+
+        if (this.recipe.instructions) {
+          this.recipe.instructions = this.recipe.instructions
+            .replace(/<\/?ol>/g, '')
+            .replace(/<\/?li>/g, '<br>');
+        }
+
       } catch (error) {
         console.error('Error loading recipe:', error);
         this.recipe = null;
@@ -162,24 +187,37 @@ export default {
     },
 
     getPrepareLink() {
-      const recipeId = this.$route.params.recipeId;
+      const recipeID = this.$route.params.recipeID;
       if (this.recipeType === 'family') {
-        return `/user/family-recipes/${recipeId}/prepare`;
+        return `/user/family-recipes/${recipeID}/prepare`;
       } else if (this.recipeType === 'personal') {
-        return `/user/my-recipes/${recipeId}/prepare`;
+        return `/user/my-recipes/${recipeID}/prepare`;
       } else {
-        return `/recipes/${recipeId}/prepare`;
+        return `/recipes/${recipeID}/prepare`;
       }
     },
 
-    toggleFavorite() {
-      alert("Favorite toggle logic to be implemented.");
+    async toggleFavorite() {
+      try {
+        const recipeID = this.recipe.recipeID || this.recipe.recipeId;  
+        await axios.post(`${store.server_domain}/user/favorites`, 
+          { recipeID: recipeID },
+          { withCredentials: true }
+        );
+        this.recipe.isFavorite = true;  
+        this.toast("Success", "Recipe added to favorites!", "success");
+      } catch (error) {
+        console.error('Error adding to favorites:', error);
+        this.toast("Error", "Failed to add to favorites", "danger");
+      }
     },
+
+
 
     async addToMealPlan() {
       try {
-        const recipeID = this.recipe.recipeID || this.recipe.id;  
-        await axios.post(`${store.server_domain}/meal-plan`, { recipeID }, { withCredentials: true });
+        const recipeID = (this.recipe.recipeID).toString();  
+        await axios.post(`${store.server_domain}/user/meal-plan`, { recipeID }, { withCredentials: true });
         alert('Recipe added to meal plan.');
       } catch (error) {
         console.error('Error adding to meal plan:', error);
@@ -202,7 +240,8 @@ export default {
     isFavorite() {
       return this.recipe?.isFavorite === true;
     }
-  }
+  },
+
 };
 </script>
 
