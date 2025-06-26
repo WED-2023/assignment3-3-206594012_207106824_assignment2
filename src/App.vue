@@ -66,6 +66,7 @@
                 </button>
               </li>
 
+
               <!-- User Dropdown -->
               <li class="nav-item dropdown">
                 <a 
@@ -95,32 +96,6 @@
                       <i class="bi bi-person me-2"></i>Profile
                     </router-link>
                   </li> -->
-                  <li>
-                    <router-link class="dropdown-item" :to="{ name: 'favorites' }">
-                      <i class="bi bi-heart me-2"></i>Favorites
-                    </router-link>
-                  </li>
-                  <li>
-                    <router-link class="dropdown-item" :to="{ name: 'my-recipes' }">
-                      <i class="bi bi-journal-text me-2"></i>My Recipes
-                    </router-link>
-                  </li>
-                  <li>
-                    <router-link class="dropdown-item" :to="{ name: 'family-recipes' }">
-                      <i class="bi bi-people me-2"></i>Family Recipes
-                    </router-link>
-                  </li>
-                  <li>
-                    <router-link class="dropdown-item" :to="{ name: 'MealPlan' }">
-                      <i class="bi bi-list-task me-2"></i>Meal Plan
-                    </router-link>
-                  </li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li>
-                    <router-link class="dropdown-item" :to="{ name: 'profile' }">
-                      <i class="bi bi-person me-2"></i>Profile
-                    </router-link>
-                  </li>
                   <li>
                     <router-link class="dropdown-item" :to="{ name: 'favorites' }">
                       <i class="bi bi-heart me-2"></i>Favorites

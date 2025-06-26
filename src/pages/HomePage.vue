@@ -61,7 +61,7 @@
                 <p class="mt-2 text-muted">Loading recent recipes...</p>
               </div>
               <div v-else-if="watchedRecipes.length > 0">
-                <RecipePreviewList :title="''" :recipes="watchedRecipes" />
+                <RecipePreviewList :title="''" :recipes="watchedRecipes" :getRoute="getRecipeRoute" />
               </div>
               <div v-else class="text-center py-4">
                 <i class="bi bi-eye-slash display-4 text-muted"></i>
@@ -156,7 +156,11 @@ export default {
             // 'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         })
-        this.watchedRecipes = response.data
+        this.watchedRecipes = response.data.map(recipe => ({
+          ...recipe,
+          isFamily: recipe.isFamily === true || recipe.isFamily === 1
+        }));
+
       } catch (error) {
         console.error('Error loading watched recipes:', error)
         this.toast('Error', 'Error loading recent recipes', 'danger')
@@ -167,7 +171,22 @@ export default {
     
     viewRecipe(recipeId) {
       this.$router.push(`/recipe/${recipeId}`)
-    }
+    },
+
+    getRecipeRoute(recipe) {
+      const recipeID = recipe.recipeID;
+      const isFamily = recipe.isFamily === true || recipe.isFamily === 1;
+
+      if (recipeID.startsWith('RU')) {
+        if (isFamily) {
+          return { name: 'FamilyRecipeView', params: { recipeID } };
+        } else {
+          return { name: 'MyRecipeView', params: { recipeID } };
+        }
+      } else {
+        return { name: 'FullRecipeView', params: { recipeID } };
+      }
+  }
   },
   // watch: {
   //   isLoggedIn(newVal) {

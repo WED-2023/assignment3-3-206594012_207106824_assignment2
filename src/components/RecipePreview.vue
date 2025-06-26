@@ -77,6 +77,10 @@ export default {
     imageHeight: {
       type: [String, Number],
       default: 120
+    },
+    route: {
+    type: [String, Object],
+    default: null
     }
   },
   data() {
@@ -86,10 +90,15 @@ export default {
   },
   methods: {
     viewRecipe() {
+      if (this.route) {
+        this.$router.push(this.route);
+        return;
+      }
       let path;
 
       if (this.recipe.recipeID && this.recipe.recipeID.startsWith('RU')) {
-        if (this.recipe.isFamily) {
+        const isFamily = this.recipe.isFamily === true || this.recipe.isFamily === 1;
+        if (isFamily) {
           path = `/user/family-recipes/${this.recipe.recipeID}`;
         } else {
           path = `/user/my-recipes/${this.recipe.recipeID}`;

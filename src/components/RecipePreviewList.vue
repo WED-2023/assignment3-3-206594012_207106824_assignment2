@@ -6,7 +6,7 @@
     </h3>
     <div class="row">
       <div class="col" v-for="r in recipes" :key="r.recipeID">
-        <RecipePreview class="recipePreview" :recipe="r" :imageHeight="120" />
+        <RecipePreview class="recipePreview" :recipe="r" :imageHeight="120" :route="getRoute ? getRoute(r) : null" />
       </div>
     </div>
   </div>
@@ -27,6 +27,10 @@ export default {
     recipes: {
       type: Array,
       required: true
+    },
+    getRoute: {
+      type: Function,
+      required: false
     }
   },
   mounted() {
