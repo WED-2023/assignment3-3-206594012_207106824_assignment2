@@ -57,7 +57,7 @@
                   <div v-if="v$.password.minLength.$invalid">Password must be at least 8 characters</div>
                   <div v-if="v$.password.hasUpperCase.$invalid">Password must contain at least one uppercase letter</div>
                   <div v-if="v$.password.hasNumber.$invalid">Password must contain at least one number</div>
-                  <div v-if="v$.password.alphaNum && !v$.password.alphaNum.$response">Password can contain only letters and numbers</div>
+                  <div v-if="v$.password.hasSpecialChar.$invalid">Password must contain at least one special character (!@#$%^&*)</div>
                 </div>
               </div>
 
@@ -125,7 +125,7 @@ export default {
 
     const hasUpperCase = helpers.regex(/[A-Z]/);
     const hasNumber = helpers.regex(/[0-9]/);
-    const alphaNum = helpers.regex(/^[a-zA-Z0-9]+$/);
+    const hasSpecialChar = helpers.regex(/[!@#$%^&*]/);
 
     const rules = {
       username: { required },
@@ -134,7 +134,7 @@ export default {
         minLength: minLength(8),
         hasUpperCase,
         hasNumber,
-        alphaNum
+        hasSpecialChar
       }
     };
 
