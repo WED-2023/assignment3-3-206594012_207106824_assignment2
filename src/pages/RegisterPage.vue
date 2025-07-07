@@ -27,7 +27,8 @@
                 <div v-if="v$.username.$error" class="invalid-feedback">
                   <div v-if="v$.username.required.$invalid">Username is required</div>
                   <div v-if="v$.username.minLength.$invalid">Username must be at least 3 characters</div>
-                  <div v-if="v$.username.alphaNum.$invalid">Username can contain only letters and numbers</div>
+                  <div v-if="v$.username.maxLength?.$invalid">Username must be at most 8 characters</div>
+                  <div v-if="v$.username.isAlpha?.$invalid">Username can contain only letters</div>
                 </div>
               </div>
 
@@ -133,12 +134,10 @@
                 </div>
                 <div v-if="v$.password.$error" class="invalid-feedback">
                   <div v-if="v$.password.required.$invalid">Password is required</div>
-                  <div v-if="v$.password.minLength.$invalid">Password must be at least 8 characters</div>
-                  <div v-if="v$.password.hasUpperCase.$invalid">Password must contain at least one uppercase letter</div>
-                  <div v-if="v$.password.hasNumber.$invalid">Password must contain at least one number</div>
-                </div>
-                <div class="form-text">
-                  <small>Password must be at least 8 characters long, contain an uppercase letter and a number</small>
+                  <div v-if="v$.password.minLength.$invalid">Password must be at least 5 characters</div>
+                  <div v-if="v$.password.maxLength?.$invalid">Password must be at most 10 characters</div>
+                  <div v-if="v$.password.hasNumber?.$invalid">Password must contain at least one number</div>
+                  <div v-if="v$.password.hasSpecialChar?.$invalid">Password must contain at least one special character (!@#$%^&*)</div>
                 </div>
               </div>
 
@@ -226,40 +225,32 @@ export default {
       profilePic: ''
     });
 
-    // Custom validations
-    const alphaNum = helpers.regex(/^[a-zA-Z0-9]+$/);
-    const hasUpperCase = helpers.regex(/[A-Z]/);
+    const isAlpha = helpers.regex(/^[A-Za-z]+$/);
     const hasNumber = helpers.regex(/[0-9]/);
-
-    const passwordsMatch = (value) => {
-      return value === state.password;
-    };
+    const hasSpecialChar = helpers.regex(/[!@#$%^&*]/);
+    const passwordsMatch = (value) => value === state.password;
 
     const rules = {
-      username: { 
-        required, 
+      username: {
+        required,
         minLength: minLength(3),
-        alphaNum
+        maxLength: helpers.withMessage("Username must be at most 8 characters", v => v.length <= 8),
+        isAlpha: helpers.withMessage("Username can contain only letters", isAlpha)
       },
       firstname: { required },
       lastname: { required },
       country: { required },
-      email: { 
-        required, 
-        email 
-      },
-      password: { 
-        required, 
-        minLength: minLength(8),
-        hasUpperCase,
-        hasNumber
+      email: { required, email },
+      password: {
+        required,
+        minLength: minLength(5),
+        maxLength: helpers.withMessage("Password must be at most 10 characters", v => v.length <= 10),
+        hasNumber: helpers.withMessage("Password must contain at least one number", hasNumber),
+        hasSpecialChar: helpers.withMessage("Password must contain at least one special character (!@#$%^&*)", hasSpecialChar)
       },
       confirmPassword: {
         required,
-        passwordsMatch: helpers.withMessage(
-          'Passwords do not match',
-          passwordsMatch
-        )
+        passwordsMatch: helpers.withMessage('Passwords do not match', passwordsMatch)
       },
       profilePic: {}
     };
@@ -268,14 +259,12 @@ export default {
 
     const register = async () => {
       const isValid = await v$.value.$validate();
-
       if (!isValid) {
         window.toast('Error', 'Please fix the form errors', 'danger');
         return;
       }
 
       loading.value = true;
-
       try {
         await axios.post('http://localhost:3001/Register', {
           username: state.username,
@@ -286,7 +275,6 @@ export default {
           password: state.password,
           profilePic: state.profilePic
         });
-
         window.toast("Registration successful", "Your account has been created. You can now log in", "success");
         router.push('/login');
       } catch (err) {
@@ -297,12 +285,12 @@ export default {
       }
     };
 
-    return { 
-      state, 
-      v$, 
-      register, 
-      loading, 
-      showPassword, 
+    return {
+      state,
+      v$,
+      register,
+      loading,
+      showPassword,
       showConfirmPassword
     };
   }
@@ -314,53 +302,38 @@ export default {
   border: none;
   border-radius: 15px;
 }
-
 .card-header {
   border-radius: 15px 15px 0 0 !important;
   border-bottom: none;
 }
-
 .form-control:focus {
   border-color: #0d6efd;
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
 }
-
 .btn-primary {
   border-radius: 8px;
   font-weight: 600;
 }
-
 .btn-primary:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
 }
-
 .input-group .btn {
   border-left: none;
 }
-
 .input-group .form-control {
   border-right: none;
 }
-
 .input-group .form-control:focus {
   border-right: none;
   box-shadow: none;
 }
-
 .input-group .btn:focus {
   box-shadow: none;
 }
-
-.form-text {
-  font-size: 0.8rem;
-  color: #6c757d;
-}
-
 a {
   color: #0d6efd;
 }
-
 a:hover {
   color: #0a58ca;
 }

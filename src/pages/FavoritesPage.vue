@@ -87,15 +87,14 @@ export default {
 
       if (recipeID.startsWith('RU')) {
         if (isFamily) {
-          return { name: 'FamilyRecipeView', params: { recipeID: recipeID } };
+          return { name: 'FamilyRecipeView', params: { recipeID } };
         } else {
-          return { name: 'MyRecipeView', params: { recipeID: recipeID } };
+          return { name: 'MyRecipeView', params: { recipeID } };
         }
       } else {
-        return { name: 'FullRecipeView', params: { recipeID: recipeID } };
+        return { name: 'FullRecipeView', params: { recipeID } };
       }
     }
-
   }
 };
 </script>
