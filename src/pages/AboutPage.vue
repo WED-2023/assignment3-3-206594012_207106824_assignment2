@@ -10,6 +10,28 @@
         </div>
 
         <div class="row">
+          <!-- Marketing Summary Section -->
+          <div class="col-12 mb-4">
+            <div class="card h-100 shadow-sm bg-light">
+              <div class="card-body">
+                <h3 class="card-title text-primary">
+                  <i class="bi bi-bullseye me-2"></i>About the Project & Team
+                </h3>
+                <p class="card-text">
+                  <strong>Vue Recipes</strong> is an innovative web application designed to make discovering, searching, and managing recipes easy and enjoyable. Built with the latest web technologies, our platform offers a modern, responsive, and user-friendly experience for food lovers everywhere. <br/>
+                  <br/>
+                  <strong>Our Team</strong> consists of passionate developers and designers: Adva Halamish, Lee Hamo, and Shani Zilberberg. We are committed to delivering high-quality, intuitive, and accessible solutions, combining expertise in frontend, backend, and UX/UI design. <br/>
+                  <br/>
+                  This project is part of our academic journey in the Web Development Environments course at BGU, and demonstrates our ability to work collaboratively, learn new technologies, and deliver a complete product from concept to deployment.
+                </p>
+                <p class="mb-0">
+                  <strong>Explore our previous assignments:</strong><br/>
+                  <a href="https://github.com/WED-2023/assignment3-2-206594012_207106824_314743485_assignment2.git" target="_blank">Assignment 2 - API & Backend</a><br/>
+                  <a href="https://github.com/WED-2023/assignment2-206594012_207106824_assignment2.git" target="_blank">Assignment 1 - Space Battle Game</a>
+                </p>
+              </div>
+            </div>
+          </div>
           <!-- About Section -->
           <div class="col-md-6 mb-4">
             <div class="card h-100 shadow-sm">
@@ -75,9 +97,7 @@
                     <h6 class="text-muted">Backend</h6>
                     <ul class="list-unstyled small">
                       <li>Node.js</li>
-                      <li>Express</li>
                       <li>MongoDB</li>
-                      <li>JWT</li>
                     </ul>
                   </div>
                 </div>
@@ -123,7 +143,7 @@
                 <div class="d-flex flex-column align-items-center">
                   <i class="bi bi-server display-4 text-success mb-2"></i>
                   <h5>Backend Developer</h5>
-                  <p class="text-muted small">Node.js, Express, MongoDB</p>
+                  <p class="text-muted small">Node.js, MongoDB</p>
                 </div>
               </div>
               <div class="col-md-4 mb-3">
