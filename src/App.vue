@@ -231,6 +231,11 @@ export default {
         console.error("Failed to logout from server:", err);
       }
       // Clear store
+        const username = localStorage.getItem("username");
+        if (username) {
+          localStorage.removeItem(`lastSearch_${username}`);
+        }
+
       store.logout();
       
       // Clear localStorage

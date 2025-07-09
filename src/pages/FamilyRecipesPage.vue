@@ -45,7 +45,7 @@
                 />
 
                 <!--Family member badge-->
-                <div class="position-absolute top-0 start-0 m-2">
+                <div class="position-absolute top-0 start-0 m-2" style="margin-top: 2rem;">
                   <span class="badge bg-warning text-dark">
                     <i class="bi bi-person-heart"></i> {{ recipe.familyMember }}
                   </span>
@@ -58,6 +58,14 @@
                   </span>
                 </div>
               </div>
+
+                <!-- Viewed badge -->
+                <div v-if="recipe.wasWatched" class="position-absolute top-0 start-0 m-2 translate-y">
+                  <span class="badge bg-success">
+                    <i class="bi bi-eye-fill"></i> Viewed
+                  </span>
+                </div>
+              
               
               <div class="card-body">
                 <h5 class="card-title">{{ recipe.title }}</h5>

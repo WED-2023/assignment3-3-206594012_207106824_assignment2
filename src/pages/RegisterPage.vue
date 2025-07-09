@@ -75,15 +75,18 @@
                 <label for="country" class="form-label">
                   <i class="bi bi-globe"></i> Country
                 </label>
-                <input
+                <select
                   id="country"
                   v-model="state.country"
-                  type="text"
                   class="form-control"
                   :class="{ 'is-invalid': v$.country.$error, 'is-valid': !v$.country.$error && state.country }"
-                  placeholder="Enter country"
                   @blur="v$.country.$touch()"
-                />
+                >
+                  <option value="" disabled>Select country</option>
+                  <option v-for="country in countries" :key="country.iso2" :value="country.name">
+                    {{ country.name }}
+                  </option>
+                </select>
                 <div v-if="v$.country.$error" class="invalid-feedback">
                   <div v-if="v$.country.required.$invalid">Country is required</div>
                 </div>
@@ -205,6 +208,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, minLength, email, helpers } from '@vuelidate/validators';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import countries from '../country.json';
 
 export default {
   name: "RegisterPage",
@@ -291,7 +295,8 @@ export default {
       register,
       loading,
       showPassword,
-      showConfirmPassword
+      showConfirmPassword,
+      countries
     };
   }
 };

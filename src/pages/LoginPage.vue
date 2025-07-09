@@ -170,10 +170,10 @@ export default {
 
         if (rememberMe.value) {
           localStorage.setItem('rememberMe', 'true');
-          localStorage.setItem('username', state.username);
+          // localStorage.setItem('username', state.username);
         } else {
           localStorage.removeItem('rememberMe');
-          localStorage.removeItem('username');
+          
         }
 
         window.toast("Login successful", `Welcome ${state.username}!`, "success");

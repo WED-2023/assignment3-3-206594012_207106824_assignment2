@@ -34,6 +34,11 @@
                 <span v-if="recipe.glutenFree" class="badge bg-warning"><i class="bi bi-shield-check"></i> Gluten-Free</span>
               </div>
 
+              <div v-if="recipeType === 'family' && recipe.familyMember && recipe.occasion" class="mb-3">
+                <p class="mb-1"><strong>Prepared by:</strong> {{ recipe.familyMember }}</p>
+                <p><strong>Served on occasion:</strong> {{ recipe.occasion }}</p>
+              </div>
+
               <div class="action-buttons mb-3">
                 <button @click="toggleFavorite" class="btn me-2" :class="isFavorite ? 'btn-danger' : 'btn-outline-danger'">
                   <i class="bi" :class="isFavorite ? 'bi-heart-fill' : 'bi-heart'"></i>

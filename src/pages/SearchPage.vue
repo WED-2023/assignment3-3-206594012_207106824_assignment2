@@ -22,7 +22,7 @@
         />
 
         <!-- Last Search Display -->
-        <div class="alert alert-info" v-if="lastSearch && !hasSearched">
+        <div class="alert alert-info" v-if="lastSearch && !hasSearched && isLoggedIn">
           <div class="d-flex justify-content-between align-items-center">
             <div>
               <h5 class="alert-heading">
@@ -74,7 +74,19 @@ export default {
     }
   },
   mounted() {
-    this.loadLastSearchFromStorage()
+  const checkInterval = setInterval(() => {
+    const username = localStorage.getItem("username");
+    if (username) {
+      this.loadLastSearchFromStorage();
+      clearInterval(checkInterval);
+    }
+  }, 100);
+},
+
+  computed: {
+  isLoggedIn() {
+    return !!localStorage.getItem("username");
+  }
   },
   methods: {
     async performSearch(searchParams) {
@@ -116,13 +128,19 @@ export default {
         resultsCount: this.searchResults.length,
         timestamp: Date.now()
       }
-      localStorage.setItem('lastSearch', JSON.stringify(lastSearch))
+      const username = localStorage.getItem("username");
+      if (username) {
+        localStorage.setItem(`lastSearch_${username}`, JSON.stringify(lastSearch));
+      }
     },
     
     loadLastSearchFromStorage() {
-      const saved = localStorage.getItem('lastSearch')
-      if (saved) {
-        this.lastSearch = JSON.parse(saved)
+      const username = localStorage.getItem("username");
+      if (username) {
+        const saved = localStorage.getItem(`lastSearch_${username}`);
+        if (saved) {
+          this.lastSearch = JSON.parse(saved);
+        }
       }
     },
     
